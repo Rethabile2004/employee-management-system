@@ -1,0 +1,118 @@
+﻿@model List<Auth.Models.Models.TrainingModel>
+
+@{
+    Layout = "~/Views/Shared/_InsideLayoutHR.cshtml";
+    ViewData["Title"] = "Training Management";
+}
+
+<style>
+    .trainings-header > div {
+        display: flex;
+        align-items: center;
+    }
+
+    .col-training {
+        flex: 2; 
+    }
+
+    .col-date,
+    .col-status {
+        flex: 1;
+    }
+
+    .col-date,
+    .col-status {
+        text-align: center;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 fw-bold mb-0">Training Management</h2>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
+    </div>
+
+    <!-- Training List -->
+    <div class="trainings-list">
+        @if (Model != null && Model.Any())
+        {
+            <!-- Table Header (Desktop) -->
+            <div class="trainings-header d-none d-md-flex bg-body-tertiary py-3 px-4 rounded-top border-bottom">
+                <div class="col-training"><strong>Training</strong></div>
+                <div class="col-date text-center"><strong>Start</strong></div>
+                <div class="col-date text-center"><strong>End</strong></div>
+                <div class="col-status text-center"><strong>Status</strong></div>
+            </div>
+
+            @foreach (var t in Model)
+            {
+                var status = (t.CompletionStatus ?? "Unknown").Trim().ToLower();
+                var statusClass = status switch
+                {
+                    "completed" => "bg-success",
+                    "in-progress" or "in progress" => "bg-warning text-dark",
+                    "pending" => "bg-danger",
+                    _ => "bg-secondary"
+                };
+                var statusText = char.ToUpper(status[0]) + status.Replace("-", " ").Substring(1);
+
+                <div class="training-card card border-0 shadow-sm mb-3 rounded-3 overflow-hidden">
+                    <a asp-action="TrainingDetails" asp-controller="HR" asp-route-id="@t.TrainingId" class="text-decoration-none h-100">
+                        <div class="card-body p-0">
+                            <div class="row g-0 align-items-center h-100">
+                                <!-- Training Info -->
+                                <div class="col-md-5 p-4">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="training-icon rounded bg-primary text-white d-flex align-items-center justify-content-center"
+                                             style="width: 44px; height: 44px;">
+                                            <i class="bi bi-journal-text"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 fw-semibold text-primary">
+                                                @t.TrainingName
+                                            </h6>
+                                            <small class="text-muted d-block">
+                                                <i class="bi bi-hash me-1"></i>ID: @t.TrainingId
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Start Date -->
+                                <div class="col-md-2 p-3 text-center border-start d-flex flex-column justify-content-center">
+                                    <small class="text-muted d-md-none">Start</small>
+                                    <div class="fw-medium">@t.StartDate</div>
+                                </div>
+
+                                <!-- End Date -->
+                                <div class="col-md-2 p-3 text-center border-start d-flex flex-column justify-content-center">
+                                    <small class="text-muted d-md-none">End</small>
+                                    <div class="fw-medium">@t.EndDate</div>
+                                </div>
+
+                                <!-- Status -->
+                                <div class="col-md-3 p-3 text-center border-start d-flex flex-column justify-content-center">
+                                    <span class="badge @statusClass px-3 py-2 rounded-pill">
+                                        @statusText
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center py-5 my-5">
+                <i class="bi bi-journal-check display-1 text-muted opacity-50"></i>
+                <h5 class="mt-3 text-muted">No trainings found</h5>
+                <p class="text-muted">There are no training programs in the system.</p>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,110 @@
+﻿@model IEnumerable<auth.Models.Models.NotificationModel>
+
+@{
+    ViewData["Title"] = "Notifications";
+    // Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+}
+
+
+    <style >
+    :root {
+        --purple: #6f42c1;
+        --light-gray: #f8f9fa;
+        --dark-text: #212529;
+    }
+
+    /* body {
+        background-color: var(--light-gray);
+        color: var(--dark-text);
+        font-family: 'Segoe UI', sans-serif;
+    } */
+
+    .notification-card {
+        background-color: white;
+        border-left: 5px solid var(--purple);
+        padding: 15px 20px;
+        margin-bottom: 15px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .notification-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .notification-status {
+        font-size: 0.9em;
+        font-weight: bold;
+        color: var(--purple);
+    }
+
+    .notification-message {
+        margin-top: 8px;
+    }
+
+    .notification-date {
+        font-size: 0.8em;
+        color: #6c757d;
+    }
+
+    .action-buttons button {
+        margin-right: 8px;
+    }
+
+    .btn-purple {
+        background-color: var(--purple);
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .btn-purple:hover {
+            background-color: #5a32a3;
+        }
+
+    .btn-light {
+        background-color: var(--light-gray);
+        color: var(--dark-text);
+        border: 1px solid #ccc;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .btn-light:hover {
+            background-color: #e9ecef;
+        }
+</style>
+
+
+<div class="container mt-4 notification-theme">
+    <h2 class="mb-4" style="color: var(--purple);">Notifications</h2>
+
+    <div id="notificationList">
+        @await Html.PartialAsync("_UnreadNotificationsPartial", Model)
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function refreshNotifications() {
+            $.ajax({
+                url: '@Url.Action("RefreshUnread", "Notification")',
+                type: 'GET',
+                success: function (data) {
+                    $('#notificationList').html(data);
+                },
+                error: function () {
+                    console.warn('Could not refresh notifications.');
+                }
+            });
+        }
+
+        setInterval(refreshNotifications, 5000);
+    </script>
+}

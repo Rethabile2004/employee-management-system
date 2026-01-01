@@ -1,0 +1,105 @@
+﻿@model auth.Models.Models.NotificationModel
+
+@{
+
+    ViewData["Title"] = "Notification Details";
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+}
+
+<style>
+    :root {
+        --purple: #6f42c1;
+        --light-gray: #f8f9fa;
+        --dark-text: #212529;
+    }
+
+    body {
+        background-color: var(--light-gray);
+        color: var(--dark-text);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .details-container {
+        background-color: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        max-width: 700px;
+        margin: 30px auto;
+    }
+
+    .header {
+        color: var(--purple);
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .meta {
+        font-size: 0.9em;
+        color: #6c757d;
+        margin-bottom: 15px;
+    }
+
+    .message-box {
+        background-color: var(--light-gray);
+        border-left: 4px solid var(--purple);
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+
+    .btn-purple {
+        background-color: var(--purple);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+        .btn-purple:hover {
+            background-color: #5a32a3;
+        }
+
+    .btn-light {
+        background-color: var(--light-gray);
+        color: var(--dark-text);
+        border: 1px solid #ccc;
+        padding: 8px 15px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+        .btn-light:hover {
+            background-color: #e9ecef;
+        }
+</style>
+
+<div class="details-container">
+    <h3 class="header">Notification Details</h3>
+
+    <div class="meta">
+        <strong>From:</strong> @Model.SentBy <br />
+        <strong>Sent On:</strong> @Model.SentDate.ToLocalTime().ToString("MMM dd, yyyy hh:mm tt") <br />
+        <strong>Status:</strong> @(Model.ReadStatus == "Read" ? "Read" : "Unread")
+    </div>
+
+    <div class="message-box">
+        @Model.Message
+    </div>
+
+    <div>
+        @if (Model.ReadStatus != "Read")
+        {
+        <form asp-action="MarkAsRead" asp-route-id="@Model.NotificationId" method="post" style="display:inline;">
+            <button type="submit" class="btn-light">
+                @(Model.ReadStatus == "Read" ? "Mark as Unread" : "Mark as Read")
+            </button>
+        </form>
+            
+        }
+
+        <a asp-action="Index" class="btn-purple">Back to List</a>
+    </div>
+</div>

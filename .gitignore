@@ -1,0 +1,51 @@
+# Ignore Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+AppData/
+*.log
+
+# Project-specific folders
+auth/bin/
+auth/obj/
+auth/AppData/
+auth/wwwroot/lib/
+auth/Properties/launchSettings.json
+
+# Firebase and secrets
+auth/serviceAccountKey.json
+auth/appsettings*.json
+auth/.env
+auth/.env.*
+
+# Firebase CLI artifacts
+firebase.json
+.firebaserc
+.firebase/
+firebase-debug.log
+
+# Node.js (if using Firebase CLI or frontend tooling)
+auth/node_modules/
+npm-debug.log
+yarn-error.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Rider and VS Code
+.idea/
+.vscode/
+
+# Others
+*.swp
+*.bak
+*.tmp
+*.orig
+*.rej

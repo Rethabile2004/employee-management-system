@@ -1,0 +1,55 @@
+﻿@model auth.Models.Models.ReportModel
+@{
+    ViewData["Title"] = "Submit Report";
+}
+
+<div class="container py-4">
+    <h2 class="h4 fw-bold mb-4">Submit a Report</h2>
+
+    <form asp-action="Submit" method="post" class="card p-4 shadow-sm" style="border-radius: 16px; background: #fff;">
+        <input asp-for="ReportId" type="hidden" />
+        <input asp-for="UserId" type="hidden" />
+        <input asp-for="SubmittedAt" type="hidden" />
+        <input asp-for="Status" type="hidden" />
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" placeholder="e.g., Monthly Progress" required />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        @* [FirestoreDocumentId]
+        public string ReportId { get; set; }
+
+        [FirestoreProperty("userId")]
+        public string UserId { get; set; }
+
+        [FirestoreProperty("title")]
+        public string Title { get; set; }
+
+        [FirestoreProperty("description")]
+        public string Description { get; set; }
+
+        [FirestoreProperty("submittedAt")]
+        public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
+
+        [FirestoreProperty("status")]
+        public string Status { get; set; } = "Submitted"; // Submitted, Reviewed, etc. *@
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="5"
+                      placeholder="Describe your report in detail..." required></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn px-4"
+                    style="background: linear-gradient(135deg, #6B46C1, #5E35B1); color: white; border: none; border-radius: 12px;">
+                Submit Report
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 12px;">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

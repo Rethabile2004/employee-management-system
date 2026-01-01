@@ -1,0 +1,147 @@
+﻿@using auth.Models.Models
+@model List<QualificationModel>
+
+@{
+    ViewData["Title"] = "Qualification Management";
+}
+
+<div class="min-vh-100" style="padding: 2rem 0;">
+    <div class="container">
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-5">
+            <div>
+                <h1 class="h3 fw-bold mb-1" style="color: #333;">My Qualifications</h1>
+                <p class="text-muted small mb-0">Your academic journey</p>
+            </div>
+            <a asp-action="Add" class="btn btn-sm px-4 d-flex align-items-center gap-2"
+               style="background: linear-gradient(135deg, #6B46C1, #5E35B1); color: white; border: none; border-radius: 50px; box-shadow: 0 4px 12px rgba(107,70,193,0.3); font-weight: 500;">
+                <i class="bi bi-plus-lg"></i> Add
+            </a>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <!-- Empty State -->
+            <div class="text-center py-5 my-5">
+                <i class="bi bi-journal-x display-1 text-muted opacity-30"></i>
+                <h4 class="mt-4 text-muted">No qualifications yet</h4>
+                <p class="text-muted mb-4">Add your first academic record to get started.</p>
+                <a asp-action="Add" class="btn btn-primary px-5"
+                   style="background: #6B46C1; border: none; border-radius: 50px;">
+                    Add Qualification
+                </a>
+            </div>
+        }
+        else
+        {
+            <!-- ListTile-Style List -->
+            <div class="list-group list-group-flush">
+                @foreach (var item in Model.OrderByDescending(q => q.CompletionYear))
+                {
+                    <div class="list-group-item listile p-0 mb-3 border-0 shadow-sm"
+                         style="background: #ffffff; border-radius: 16px; overflow: hidden; transition: all 0.2s ease;">
+
+                        <!-- ListTile Row -->
+                        <div class="d-flex align-items-center p-3">
+
+                            <!-- Leading: Year + Status -->
+                            <div class="me-3 text-center" style="width: 60px;">
+                                <div class="fw-bold" style="font-size: 1.1rem; color: #6B46C1;">
+                                    @item.CompletionYear
+                                </div>
+                                <span class="status-chip d-block mt-1 px-2 py-0 rounded-pill small fw-semibold @GetStatusClass(item.Status)">
+                                    @item.Status
+                                </span>
+                            </div>
+
+                            <!-- Title + Subtitle -->
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 fw-semibold" style="font-size: 1rem;">
+                                    @item.QualificationName
+                                </h6>
+                                <p class="mb-0 text-muted small">
+                                    @item.InstitutionName
+                                    <span class="text-muted">·</span>
+                                    Added @item.DateAdded:MMM dd, yyyy
+                                </p>
+                            </div>
+
+                            <!-- Trailing: Action Buttons -->
+                            <div class="d-flex gap-1">
+                                
+                                    
+                                <a asp-action="Details" asp-route-id="@item.QualificationId"
+                                   class="btn btn-sm btn-icon" title="View"
+                                   style="color: #6B46C1; background: #f3eafd; border: none; width: 36px; height: 36px; border-radius: 12px;">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                                @if (item.Status!= "Rejected"){
+                                    @if (item.Status != "Approved")
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.QualificationId"
+                                           class="btn btn-sm btn-icon" title="Edit"
+                                           style="color: #666; background: #f0f0f0; border: none; width: 36px; height: 36px; border-radius: 12px;">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.QualificationId"
+                                           class="btn btn-sm btn-icon" title="Delete"
+                                           style="color: #dc3545; background: #fee; border: none; width: 36px; height: 36px; border-radius: 12px;">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+                                    }
+                                }
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    string GetStatusClass(string status) => status?.ToLower() switch
+    {
+        "approved" => "bg-success text-white",
+        "pending" => "bg-warning text-dark",
+        "rejected" => "bg-danger text-white",
+        _ => "bg-secondary text-white"
+    };
+}
+
+<style>
+    .listile {
+        transition: all 0.2s ease;
+    }
+
+        .listile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(107,70,193,0.12) !important;
+        }
+
+    .status-chip {
+        font-size: 0.65rem;
+        line-height: 1.2;
+    }
+
+    .btn-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+        .btn-icon:hover {
+            transform: scale(1.1);
+        }
+
+    .list-group-item {
+        border: none !important;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

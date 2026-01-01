@@ -1,0 +1,132 @@
+﻿@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewData["Title"] = "About Us";
+}
+
+
+<div class="about-root">
+    <header class="about-header">
+        <h1>About Streamline Auditing System</h1>
+        <p class="subtitle">Empowering workforce efficiency through smart technology</p>
+    </header>
+
+    <main class="about-main">
+        <section class="about-section">
+            <p>
+                The <strong>Streamline Auditing System</strong> is a mobile-friendly and web-based solution
+                designed to improve organizational effectiveness and optimize workforce planning.
+                It enables both employees and administrators to interact seamlessly with company data.
+            </p>
+
+            <p>
+                Employees can access the system through a <strong>Flutter mobile application</strong> or
+                a <strong>web application</strong>, where they can update their personal information
+                using full <strong>CRUD functionality</strong> (Create, Read, Update, Delete).
+                Meanwhile, administrators can view dashboards and generate reports displaying all users’
+                qualifications, training, and skill-related data.
+            </p>
+
+            <p>
+                Streamline handles <strong>sensitive data</strong> securely and maintains
+                training and performance records. The technical design emphasizes:
+            </p>
+
+            <ul class="about-list">
+                <li>Secure authentication and authorization</li>
+                <li> Real-time data management</li>
+                <li> Responsive and intuitive user interfaces</li>
+                <li>Seamless integration between mobile and web platforms</li>
+            </ul>
+
+            <p>
+                By leveraging modern technologies, Streamline Auditing System aims to enhance
+                transparency, improve performance tracking, and empower organizations to make
+                smarter, data-driven decisions.
+            </p>
+        </section>
+
+        <div class="about-footer">
+            <a href="@Url.Action("Index", "home")" class="back-btn">← </a>
+        </div>
+    </main>
+</div>
+
+<style>
+
+    .about-root {
+        background-color: #8c6bd1; /* light purple background */
+        color: #2b003a;
+        min-height: 100vh;
+        padding: 40px 20px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .about-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+        .about-header h1 {
+            font-size: 36px;
+            color: #5b2fa8;
+            margin-bottom: 10px;
+        }
+
+        .about-header .subtitle {
+            font-size: 18px;
+            color: #5b2fa8;
+        }
+
+    .about-section {
+        max-width: 850px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 4px 10px rgba(91, 47, 168, 0.15);
+        padding: 30px;
+        line-height: 1.7;
+    }
+
+        .about-section p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+    .about-list {
+        list-style-type: none;
+        padding-left: 0;
+        margin: 20px 0;
+    }
+
+        .about-list li {
+            background: #ede7f6;
+            border-left: 5px solid #b388eb;
+            padding: 10px 15px;
+            margin: 6px 0;
+            border-radius: 8px;
+            color: #4a148c;
+        }
+
+    .about-footer {
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .back-btn {
+        background-color: #6c5ce7;
+        color: white;
+        text-decoration: none;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: 600;
+        box-shadow: 0 4px 8px rgba(179, 136, 235, 0.4);
+        transition: all 0.3s ease;
+    }
+
+        .back-btn:hover {
+            background-color: blueviolet;
+            transform: translateY(-3px);
+        }
+</style>
+

@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Page Not Found";
+}
+
+<div class="min-vh-100 d-flex align-items-center justify-content-center" style="background-color: #f0f0f0; padding: 2rem 0;">
+    <div class="text-center">
+        <!-- Icon -->
+        <div class="mb-4">
+            <i class="bi bi-exclamation-triangle-fill display-1" style="color: #E53935; opacity: 0.7;"></i>
+        </div>
+
+        <!-- Title -->
+        <h1 class="display-4 fw-bold mb-3" style="color: #333;">
+            Oops! Something went wrong
+        </h1>
+
+        <!-- Message -->
+        <p class="lead text-muted mb-4" style="max-width: 500px; margin: 0 auto;">
+            The page you're looking for doesn't exist or an unexpected error occurred.
+        </p>
+
+        <!-- Actions -->
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a asp-controller="Employee" asp-action="Dashboard"
+               class="btn btn-lg px-5 d-flex align-items-center gap-2"
+               style="background: linear-gradient(135deg, #6B46C1, #5E35B1); color: white; border: none; border-radius: 50px; box-shadow: 0 4px 12px rgba(107,70,193,0.3);">
+                <i class="bi bi-house-door-fill"></i> Go Home
+            </a>
+            <a href="javascript:history.back()"
+               class="btn btn-lg px-5 d-flex align-items-center gap-2"
+               style="background-color: #ccc; color: #333; border: none; border-radius: 50px;">
+                <i class="bi bi-arrow-left-circle"></i> Go Back
+            </a>
+        </div>
+
+        <!-- Optional: Debug Info (only in dev) -->
+        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+        {
+            <div class="mt-5 p-3 bg-light border rounded small text-start" style="max-width: 600px; margin: 0 auto; font-family: monospace;">
+                <strong>Debug:</strong> @ViewBag.ErrorMessage
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(107,70,193,0.4) !important;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

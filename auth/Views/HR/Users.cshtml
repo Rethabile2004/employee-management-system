@@ -1,0 +1,185 @@
+﻿@model List<Auth.Models.ViewModels.UserHRViewModel>
+@{
+    Layout = "~/Views/Shared/_InsideLayoutHR.cshtml";
+    ViewData["Title"] = "Users";
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header with Search -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <h2 class="h3 fw-bold mb-0">Employee</h2>
+        <div class="d-flex gap-2 flex-wrap">
+            <!-- Search Input -->
+            <input type="text"
+                   id="searchInput"
+                   class="form-control form-control-sm"
+                   placeholder="Search by Name, ID, Reports, Trainings..."
+                   style="width: 280px;">
+            <!-- Filter & Dashboard Buttons -->
+            <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-filter"></i>
+                <span class="d-none d-lg-inline">Filter</span>
+            </button>
+            <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-speedometer2"></i>
+                <span class="d-none d-lg-inline">Dashboard</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Users List -->
+    <div class="users-list" id="usersList">
+        @if (Model != null && Model.Any())
+        {
+            <!-- Desktop Header -->
+            <div class="users-header d-none d-md-flex bg-body-tertiary py-3 px-4 rounded-top border-bottom">
+                <div class="col-6"><strong>Employee</strong></div>
+                <div class="col-3 text-center"><strong>Reports</strong></div>
+                <div class="col-3 text-center"><strong>Trainings</strong></div>
+            </div>
+
+            <!-- User Cards -->
+            <div id="userItems">
+                @foreach (var user in Model)
+                {
+                    var trainingProgress = user.TotalTrainings > 0
+                    ? (double)user.TrainingsCompleted / user.TotalTrainings * 100
+                    : 0;
+
+                    <div class="user-card card border-0 shadow-sm mb-3 rounded-3 overflow-hidden user-item"
+                         data-name="@user.FullName.ToLower()"
+                         data-id="@user.UserId.ToLower()"
+                         data-reports="@user.NumberOfReports"
+                         data-trainings="@user.TrainingsCompleted/@user.TotalTrainings">
+                        <form asp-action="UserDetails" asp-controller="HR" method="get" class="m-0 h-100">
+                            <input type="hidden" name="id" value="@user.UserId" />
+                            <button type="submit"
+                                    class="btn p-0 w-100 text-start h-100 border-0">
+                                <div class="card-body p-0">
+                                    <div class="row g-0 align-items-center h-100">
+                                        <!-- Employee Info -->
+                                        <div class="col-md-6 p-4">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="user-avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                                     style="width: 48px; height: 48px; font-weight: 600;">
+                                                    @user.FullName.Substring(0, 1).ToUpper()
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-1 fw-semibold text-primary">
+                                                        @user.FullName
+                                                    </h6>
+                                                    <small class="text-muted d-block">
+                                                        <i class="bi bi-person-badge me-1"></i>ID: @user.UserId
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Reports -->
+                                        <div class="col-md-3 p-3 text-center border-start d-flex flex-column justify-content-center">
+                                            <div class="fs-4 fw-bold text-primary">@user.NumberOfReports</div>
+                                            <small class="text-muted">Reports</small>
+                                        </div>
+                                        <!-- Trainings -->
+                                        <div class="col-md-3 p-3 text-center border-start d-flex flex-column justify-content-center">
+                                            <div class="progress mb-2" style="height: 8px;">
+                                                <div class="progress-bar bg-success"
+                                                     role="progressbar"
+                                                     style="width: @trainingProgress%"
+                                                     aria-valuenow="@trainingProgress"
+                                                     aria-valuemin="0"
+                                                     aria-valuemax="100">
+                                                </div>
+                                            </div>
+                                            <small class="text-muted">
+                                                @user.TrainingsCompleted / @user.TotalTrainings
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="text-center py-5 my-5">
+                <i class="bi bi-people display-1 text-muted opacity-50"></i>
+                <h5 class="mt-3 text-muted">No employees found</h5>
+                <p class="text-muted">There are no users in the system yet.</p>
+            </div>
+        }
+    </div>
+
+    <!-- No Results (Hidden by Default) -->
+    <div id="noResults" class="text-center py-5 d-none">
+        <i class="bi bi-search display-1 text-muted opacity-50"></i>
+        <h5 class="mt-3 text-muted">No employees match your search</h5>
+        <p class="text-muted">Try adjusting your search term.</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("searchInput");
+            const userItems = document.querySelectorAll(".user-item");
+            const usersList = document.getElementById("usersList");
+            const noResults = document.getElementById("noResults");
+
+            function filterUsers() {
+                const term = searchInput.value.trim().toLowerCase();
+                let visibleCount = 0;
+
+                userItems.forEach(item => {
+                    const name = item.getAttribute("data-name");
+                    const id = item.getAttribute("data-id");
+                    const reports = item.getAttribute("data-reports");
+                    const trainings = item.getAttribute("data-trainings").toLowerCase();
+
+                    const matches = !term ||
+                        name.includes(term) ||
+                        id.includes(term) ||
+                        reports.includes(term) ||
+                        trainings.includes(term);
+
+                    if (matches) {
+                        item.style.display = "";
+                        visibleCount++;
+                    } else {
+                        item.style.display = "none";
+                    }
+                });
+
+                // Toggle no results
+                if (visibleCount === 0 && userItems.length > 0) {
+                    noResults.classList.remove("d-none");
+                    usersList.style.display = "none";
+                } else {
+                    noResults.classList.add("d-none");
+                    usersList.style.display = "";
+                }
+            }
+
+            // Real-time search
+            searchInput.addEventListener("input", filterUsers);
+
+            // Initial filter
+            filterUsers();
+        });
+
+        // Optional: Visual feedback on card hover
+        document.querySelectorAll('.user-card').forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)';
+            });
+            card.addEventListener('mouseleave', function () {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            });
+        });
+    </script>
+}

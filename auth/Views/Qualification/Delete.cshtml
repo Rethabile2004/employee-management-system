@@ -1,0 +1,96 @@
+﻿@model auth.Models.Models.QualificationModel
+
+@{
+    ViewData["Title"] = "Remove Qualification";
+}
+
+<div class="min-vh-100" style="background-color: #f0f0f0; padding: 2rem 0;">
+    <div class="container">
+        <!-- Back & Title -->
+        <div class="d-flex align-items-center mb-4">
+            <a asp-action="List" class="text-decoration-none me-3">
+                <i class="bi bi-arrow-left-circle-fill" style="font-size: 1.5rem; color: #dc3545;"></i>
+            </a>
+            <div>
+                <h1 class="h3 mb-0 fw-bold" style="color: #dc3545;">Delete Qualification</h1>
+                <p class="text-muted small mb-0">This action cannot be undone</p>
+            </div>
+        </div>
+
+        <!-- Warning Card -->
+        <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden; border: 2px solid #dc3545;">
+            <div class="card-header text-white p-4" style="background: linear-gradient(135deg, #dc3545, #c82333);">
+                <h4 class="mb-0 d-flex align-items-center">
+                    <i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 1.4rem;"></i>
+                    Confirm Deletion
+                </h4>
+            </div>
+
+            <div class="card-body p-4 p-md-5" style="background-color: #ffffff;">
+                <p class="lead mb-4" style="color: #333;">
+                    Are you sure you want to <strong>permanently delete</strong> this qualification?
+                </p>
+
+                <div class="p-4 mb-4 rounded" style="background-color: #fff5f5; border: 1px dashed #ffc1c1;">
+                    <p class="mb-2"><strong>Qualification:</strong> <span style="color: #dc3545;">@Model.QualificationName</span></p>
+                    <p class="mb-2"><strong>Institution:</strong> @Model.InstitutionName</p>
+                    <p class="mb-2"><strong>Year:</strong> @Model.CompletionYear</p>
+                    <p class="mb-0">
+                        <strong>Status:</strong>
+                        <span class="status-badge px-3 py-1 rounded-pill fw-semibold @GetStatusClass(Model.Status)">
+                            @Model.Status
+                        </span>
+                    </p>
+                </div>
+
+                <form asp-action="DeleteConfirmed" method="post">
+                    <input type="hidden" asp-for="QualificationId" />
+
+                    <div class="d-flex gap-3 justify-content-end mt-5">
+                        <a asp-action="List"
+                           class="btn btn-lg px-5"
+                           style="background-color: #ccc; color: #333; border: none; border-radius: 0.75rem;">
+                            Cancel
+                        </a>
+                        <button type="submit"
+                                class="btn btn-lg px-5"
+                                style="background-color: #dc3545; color: white; border: none; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(220,53,69,0.4);">
+                            <i class="bi bi-trash-fill me-2"></i> Delete Permanently
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <small class="text-muted fst-italic">
+                        <i class="bi bi-info-circle me-1"></i>
+                        This will remove all associated data and certificate.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusClass(string status) => status?.ToLower() switch
+    {
+        "approved" => "bg-success text-white",
+        "pending" => "bg-warning text-dark",
+        "rejected" => "bg-danger text-white",
+        _ => "bg-secondary text-white"
+    };
+}
+
+<style>
+    .status-badge {
+        font-size: 0.85rem;
+    }
+
+    .card {
+        transition: all 0.2s ease;
+    }
+
+        .card:hover {
+            box-shadow: 0 12px 24px rgba(220,53,69,0.15) !important;
+        }
+</style>

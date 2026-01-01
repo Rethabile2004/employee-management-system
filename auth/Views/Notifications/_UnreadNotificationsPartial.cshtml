@@ -1,0 +1,77 @@
+﻿@model IEnumerable<auth.Models.Models.NotificationModel>
+@* @{
+    // ViewData["Title"] = "Notifications";
+    // Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+    Layout = "~/Views/Shared/_InsideLayoutHR.cshtml";
+} *@
+
+@if (Model != null && Model.Any())
+{
+    foreach (var n in Model)
+    {
+        <div class="notification-card border-0 shadow-sm rounded-3 p-3 mb-3 bg-white position-relative">
+            <!-- Unread Indicator -->
+            @if (n.ReadStatus == "Unread")
+            {
+                <span class="position-absolute top-0 end-0 mt-2 me-2 badge rounded-pill bg-danger">
+                    New
+                </span>
+            }
+
+            <!-- Clickable Area: Go to User Details -->
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div class="flex-grow-1"
+                     style="cursor: pointer;"
+                     onclick="window.location='/Hr/UserDetails?id=@n.UserId'">
+
+                    <!-- Sender -->
+                    <h6 class="mb-1 fw-semibold text-primary">
+                        @n.SentBy
+                    </h6>
+
+                    <!-- Message -->
+                    <p class="mb-1 text-dark small lh-sm">
+                        @n.Message
+                    </p>
+
+                    <!-- Timestamp -->
+                    <small class="text-muted d-block">
+                        <i class="bi bi-clock-history me-1"></i>
+                        @n.SentDate.ToLocalTime()
+                    </small>
+                </div>
+
+                <!-- Action Buttons (Right Side) -->
+                <div class="d-flex flex-column gap-1" onclick="event.stopPropagation();">
+                    <!-- Mark as Read/Unread -->
+                    <form asp-action="MarkAsRead" asp-route-id="@n.NotificationId" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit"
+                                class="btn btn-sm @(n.ReadStatus == "Read" ? "btn-outline-secondary" : "btn-outline-primary")
+                                               d-flex align-items-center gap-1"
+                                title="@(n.ReadStatus == "Read" ? "Mark as Unread" : "Mark as Read")">
+                            <i class="bi @(n.ReadStatus == "Read" ? "bi-envelope" : "bi-envelope-open")"></i>
+                            <span class="d-none d-md-inline">
+                                @(n.ReadStatus == "Read" ? "Unread" : "Read")
+                            </span>
+                        </button>
+                    </form>
+
+                    @* <!-- View User (Mobile: Hidden, Desktop: Shown) -->
+                    <a asp-action="UserDetails"
+                       asp-controller="Hr"
+                       asp-route-id="@n.UserId"
+                       class="btn btn-sm btn-outline-info d-none d-md-inline-flex align-items-center gap-1"
+                       title="View User Profile">
+                        <i class="bi bi-person-circle"></i>
+                        <span>View</span>
+                    </a> *@
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p class="text-muted">No unread notifications</p>
+}

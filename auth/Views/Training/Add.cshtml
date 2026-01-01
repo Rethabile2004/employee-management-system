@@ -1,0 +1,167 @@
+﻿@model Auth.Models.Models.TrainingModel
+
+@{
+    ViewData["Title"] = "Add Training";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header bg-white border-0 px-4 py-3 d-flex align-items-center">
+                    <i class="bi bi-plus-circle text-primary me-2" style="font-size: 1.3rem;"></i>
+                    <h4 class="mb-0 fw-semibold text-dark">Add New Training</h4>
+                </div>
+
+                <div class="card-body p-4 bg-light-subtle">
+                    <p class="text-muted small mb-4">Provide details of your training. Upload supporting documents if available.</p>
+
+                    <form asp-action="Add" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                        <input asp-for="TrainingId" type="hidden" />
+                        <input asp-for="UserId" type="hidden" />
+
+                        <div class="mb-3">
+                            <label asp-for="TrainingName" class="form-label fw-semibold text-dark">Training Name <span class="text-danger">*</span></label>
+                            <input asp-for="TrainingName" class="form-control form-control-lg rounded-3" placeholder="e.g., AWS Certified Solutions Architect" required />
+                            <span asp-validation-for="TrainingName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Provider" class="form-label fw-semibold text-dark">Training Provider <span class="text-danger">*</span></label>
+                            <input asp-for="Provider" class="form-control rounded-3" placeholder="e.g., Coursera, AWS, LinkedIn Learning" required />
+                            <span asp-validation-for="Provider" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-semibold text-dark">Description <span class="text-danger">*</span></label>
+                            <textarea asp-for="Description" class="form-control rounded-3" rows="3" placeholder="Briefly describe the training..." required></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CompletionStatus" class="form-label fw-semibold text-dark">Completion Status <span class="text-danger">*</span></label>
+                            <select asp-for="CompletionStatus" class="form-select rounded-3" required>
+                                <option value="">Select status</option>
+                                <option value="Not Started">Not Started</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6" id="startDateDiv">
+                                <label asp-for="StartDate" class="form-label fw-semibold text-dark">Start Date</label>
+                                <input asp-for="StartDate" type="date" class="form-control rounded-3" />
+                            </div>
+                            <div class="col-md-6" id="endDateDiv">
+                                <label asp-for="EndDate" class="form-label fw-semibold text-dark">End Date</label>
+                                <input asp-for="EndDate" type="date" class="form-control rounded-3" />
+                            </div>
+                        </div>
+
+                        <div class="mt-4" id="documentDiv">
+                            <label for="documentFile" class="form-label fw-semibold text-dark">Upload Certificate / Document</label>
+                            <input type="file" name="documentFile" id="documentFile" class="form-control rounded-3" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+                            <div class="form-text text-muted mt-1">PDF, JPG, PNG, DOCX • Max 10MB</div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+                            <a asp-action="List" class="btn btn-outline-secondary px-4 rounded-3 fw-medium">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-4 rounded-3 fw-medium">
+                                <i class="bi bi-check2 me-1"></i> Save Training
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-light: #eef1ff;
+        --light-bg: #f8f9fa;
+        --border: #e9ecef;
+        --text-muted: #6c757d;
+        --danger: #d63939;
+    }
+
+    .card {
+        border: 1px solid var(--border) !important;
+    }
+
+    .form-control, .form-select {
+        border: 1.5px solid #ced4da;
+        font-size: 0.95rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+    }
+
+    .btn-primary {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+        background-color: #3a56d4;
+        border-color: #3a56d4;
+    }
+
+    .text-primary { color: var(--primary) !important; }
+</style>
+
+@section Scripts {
+    <script>
+        function updateFormFields() {
+            const status = document.getElementById("CompletionStatus").value;
+            const startDateDiv = document.getElementById("startDateDiv");
+            const endDateDiv = document.getElementById("endDateDiv");
+            const documentDiv = document.getElementById("documentDiv");
+
+            if (status === "Not Started") {
+                startDateDiv.style.display = "none";
+                endDateDiv.style.display = "none";
+                documentDiv.style.display = "none";
+            } else if (status === "In Progress") {
+                startDateDiv.style.display = "block";
+                endDateDiv.style.display = "none";
+                documentDiv.style.display = "none";
+            } else if (status === "Completed") {
+                startDateDiv.style.display = "block";
+                endDateDiv.style.display = "block";
+                documentDiv.style.display = "block";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            updateFormFields();
+            document.getElementById("CompletionStatus").addEventListener("change", updateFormFields);
+        });
+            // <partial name="_ValidationScriptsPartial" />
+        // <script>
+            (function () {
+                'use strict'
+                var forms = document.querySelectorAll('.needs-validation')
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+            })()
+    </script>
+}
+@* @section Scripts {
+    
+} *@

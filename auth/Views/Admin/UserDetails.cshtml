@@ -1,0 +1,225 @@
+﻿@model Auth.Models.ViewModels.UserDetailsViewModel
+
+@{
+    ViewData["Title"] = "User Details";
+    Layout = "~/Views/Shared/_InsideLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 fw-bold mb-0">User Details</h2>
+        <a asp-action="Users" asp-controller="Admin" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i>
+            Back to Users
+        </a>
+    </div>
+
+    @if (Model?.User != null)
+    {
+        var user = Model.User;
+        var profilePic = !string.IsNullOrEmpty(user.ProfilePicture)
+        ? user.ProfilePicture
+        : Url.Content("~/images/secure_login.png");
+
+        <!-- Main User Card -->
+        <div class="user-profile-card card border-0 shadow-lg rounded-4 overflow-hidden mb-4">
+            <div class="card-header bg-gradient-primary text-white py-4 px-5">
+                <div class="d-flex align-items-center gap-4">
+                    <img src="~/images/default.jpg"
+                         alt="Profile"
+                         class="profile-avatar rounded-circle shadow-sm" />
+                    <div>
+                        <h4 class="mb-1 fw-bold">@user.FullName</h4>
+                        <p class="mb-1 opacity-90">
+                            <i class="bi bi-envelope me-1"></i>@user.Email
+                        </p>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <span class="badge bg-light text-primary px-3 py-2">
+                                <i class="bi bi-person-badge me-1"></i>ID: @user.UserId
+                            </span>
+                            <span class="badge bg-light text-primary px-3 py-2">
+                                <i class="bi bi-briefcase me-1"></i>@user.Role
+                            </span>
+                            <span class="badge bg-light text-primary px-3 py-2">
+                                <i class="bi bi-building me-1"></i>@user.Department
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-5">
+                <div class="row g-5">
+                    <!-- Skills -->
+                    <div class="col-lg-4">
+                        <div class="info-section h-100">
+                            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-award text-primary"></i>
+                                Skills
+                            </h5>
+                            @if (Model.Skills?.Any() == true)
+                            {
+                                <div class="d-flex flex-column gap-3">
+                                    @foreach (var skill in Model.Skills)
+                                    {
+                                        var statusClass = skill.Status?.ToLower() switch
+                                        {
+                                            "approved" => "badge-approved",
+                                            "pending" => "badge-pending",
+                                            "rejected" => "badge-rejected",
+                                            _ => "badge-pending"
+                                        };
+                                        <div class="skill-item p-3 rounded-3 border">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="mb-0 fw-semibold">@skill.SkillName</h6>
+                                                <span class="badge-status @statusClass">@skill.Status</span>
+                                            </div>
+                                            <div class="small text-muted">
+                                                <div><i class="bi bi-tag me-1"></i>@skill.Category</div>
+                                                <div><i class="bi bi-graph-up me-1"></i>Level: @skill.SkillLevel</div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted mb-0">No skills recorded.</p>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Trainings -->
+                    <div class="col-lg-4">
+                        <div class="info-section h-100">
+                            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-journal-bookmark text-success"></i>
+                                Trainings
+                            </h5>
+                            @if (Model.Trainings?.Any() == true)
+                            {
+                                <div class="d-flex flex-column gap-3">
+                                    @foreach (var training in Model.Trainings)
+                                    {
+                                        var statusClass = training.CompletionStatus?.ToLower() switch
+                                        {
+                                            "completed" => "badge-completed",
+                                            "in progress" => "badge-progress",
+                                            "not started" => "badge-notstarted",
+                                            _ => "badge-progress"
+                                        };
+                                        <div class="training-item p-3 rounded-3 border">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="mb-0 fw-semibold">@training.TrainingName</h6>
+                                                <span class="badge-status @statusClass">@training.CompletionStatus</span>
+                                            </div>
+                                            <div class="small text-muted">
+                                                <div><i class="bi bi-building me-1"></i>@training.Provider</div>
+                                                <div><i class="bi bi-calendar-range me-1"></i>@training.StartDate – @training.EndDate</div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted mb-0">No trainings recorded.</p>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Qualifications -->
+                    <div class="col-lg-4">
+                        <div class="info-section h-100">
+                            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-mortarboard-fill text-info"></i>
+                                Qualifications
+                            </h5>
+                            @if (Model.Qualifications?.Any() == true)
+                            {
+                                <div class="d-flex flex-column gap-3">
+                                    @foreach (var qual in Model.Qualifications)
+                                    {
+                                        var statusClass = qual.Status?.ToLower() switch
+                                        {
+                                            "approved" => "badge-approved",
+                                            "pending" => "badge-pending",
+                                            "rejected" => "badge-rejected",
+                                            _ => "badge-pending"
+                                        };
+                                        <div class="qualification-item p-3 rounded-3 border">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="mb-0 fw-semibold">@qual.QualificationName</h6>
+                                                <span class="badge-status @statusClass">@qual.Status</span>
+                                            </div>
+                                            <div class="small text-muted">
+                                                <div><i class="bi bi-building me-1"></i>@qual.InstitutionName</div>
+                                                <div><i class="bi bi-calendar-check me-1"></i>Year: @qual.CompletionYear</div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted mb-0">No qualifications recorded.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <hr class="my-5">
+                <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                    @* <a asp-action="EditUser" asp-controller="Admin" asp-route-id="@user.UserId"
+                       class="btn btn-primary d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-pencil-square"></i>
+                        Edit User
+                    </a> *@
+                    <button class="btn btn-danger d-flex align-items-center justify-content-center gap-2"
+                            onclick="confirmDelete('@user.UserId', '@user.FullName')">
+                        <i class="bi bi-trash"></i>
+                        Delete User
+                    </button>
+                    @* <button class="btn btn-outline-success d-flex align-items-center justify-content-center gap-2"
+                            onclick="exportUserReport('@user.UserId')">
+                        <i class="bi bi-download"></i>
+                        Export Profile
+                    </button> *@
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning border-0 rounded-3 text-center py-5">
+            <i class="bi bi-exclamation-triangle display-1"></i>
+            <h4 class="mt-3">User Not Found</h4>
+            <p>The requested user could not be found.</p>
+            <a asp-action="Index" asp-controller="Admin" class="btn btn-primary mt-2">
+                <i class="bi bi-arrow-left me-1"></i>Back to Users
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(userId, userName) {
+            if (confirm(`Are you sure you want to delete user "${userName}" (ID: ${userId})? This action cannot be undone.`)) {
+                // Submit via form or AJAX
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/Admin/DeactivateAccount/${userId}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function exportUserReport(userId) {
+            alert(`Exporting full profile report for User ID: ${userId}`);
+            // window.location = `/Admin/ExportUserProfile?userId=${userId}`;
+        }
+    </script>
+}

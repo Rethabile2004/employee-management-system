@@ -1,0 +1,218 @@
+﻿@model IEnumerable<Auth.Models.Models.TrainingModel>
+
+@{
+    ViewData["Title"] = "Training Management";
+}
+
+<div class="min-vh-100" @*style="background-color:*@ #f0f0f0; padding: 2rem 0;">
+    <div class="container">
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-5">
+            <div>
+                <h1 class="h3 fw-bold mb-1" style="color: #333;">My Training</h1>
+                <p class="text-muted small mb-0">Your professional development journey</p>
+            </div>
+            <a asp-action="Add" class="btn btn-sm px-4 d-flex align-items-center gap-2"
+               style="background: linear-gradient(135deg, #6B46C1, #5E35B1); color: white; border: none; border-radius: 50px; box-shadow: 0 4px 12px rgba(107,70,193,0.3); font-weight: 500;">
+                Add
+            </a>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div id="successToast" class="toast align-items-center text-white bg-success border-0 position-fixed start-50 translate-middle-x shadow-lg"
+                 style="top: 20px; z-index: 1100; min-width: 320px; border-radius: 12px;"
+                 role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body d-flex align-items-center fw-semibold text-white">
+                        <svg class="bi flex-shrink-0 me-2 text-white" width="22" height="22" role="img" aria-label="Success:" fill="currentColor">
+                            <use xlink:href="#check-circle-fill" />
+                        </svg>
+                        @TempData["SuccessMessage"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <!-- Empty State -->
+            <div class="text-center py-5 my-5">
+                <i class="bi bi-journal-x display-1 text-muted opacity-30"></i>
+                <h4 class="mt-4 text-muted">No training records yet</h4>
+                <p class="text-muted mb-4">Add your first training to get started.</p>
+                <a asp-action="Add" class="btn btn-primary px-5"
+                   style="background: #6B46C1; border: none; border-radius: 50px;">
+                    Add Training
+                </a>
+            </div>
+        }
+        else
+        {
+            <!-- ListTile-Style List -->
+            <div class="list-group list-group-flush">
+                @foreach (var t in Model.OrderByDescending(x => x.StartDate))
+                {
+                    var status = t.CompletionStatus?.Trim().ToLower() ?? "not started";
+                    string badgeClass, iconClass, statusText;
+
+                    switch (status)
+                    {
+                        case "approved":
+                            badgeClass = "bg-success text-white";
+                            iconClass = "bi bi-check-circle-fill";
+                            statusText = "Completed";
+                            break;
+                        case "completed":
+                            badgeClass = "bg-success text-white";
+                            iconClass = "bi bi-check-circle-fill";
+                            statusText = "Completed";
+                            break;
+                        case "in progress":
+                            badgeClass = "bg-warning text-dark";
+                            iconClass = "bi bi-hourglass-split";
+                            statusText = "In Progress";
+                            break;
+                        default:
+                            badgeClass = "bg-secondary text-white";
+                            iconClass = "bi bi-clock-history";
+                            statusText = "Not Started";
+                            break;
+                    }
+
+                <div class="list-group-item listile p-0 mb-3 border-0 shadow-sm"
+                     style="background: #ffffff; border-radius: 16px; overflow: hidden; transition: all 0.2s ease;">
+
+                    <!-- ListTile Row -->
+                    <div class="d-flex align-items-center p-3">
+
+                        <!-- Leading: Duration + Status -->
+                        <div class="me-3 text-center" style="width: 60px;">
+                            <div class="fw-bold" style="font-size: 1.1rem; color: #6B46C1;">
+                                @(t.EndDate != default && t.StartDate != default && t.StartDate <= t.EndDate
+                                                            ? (t.EndDate - t.StartDate).Days + "d"
+                                                            : "—")
+                        </div>
+                        <span class="status-chip d-block mt-1 px-2 py-0 rounded-pill small fw-semibold @badgeClass">
+                            @statusText
+                        </span>
+                    </div>
+
+                            <!-- Title + Subtitle -->
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 fw-semibold" style="font-size: 1rem;">
+                                    @t.TrainingName
+                                </h6>
+                                <p class="mb-0 text-muted small">
+                                    @t.Provider
+                                    <span class="text-muted">·</span>
+                                    Started @t.StartDate:MMM dd, yyyy
+                                </p>
+                            </div>
+
+                            <!-- Trailing: Action Buttons -->
+                            <div class="d-flex gap-1">
+
+                                <!-- Always show Details -->
+                                <a asp-action="Details" asp-route-id="@t.TrainingId"
+                                   class="btn btn-sm btn-icon" title="View"
+                                   style="color: #6B46C1; background: #f3eafd; border: none; width: 36px; height: 36px; border-radius: 12px;">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+
+                                <!-- Edit/Delete only if NOT Approved or Completed -->
+                        @if (t.CompletionStatus != "Approved" && t.CompletionStatus != "Completed")
+                                {
+                                    <a asp-action="Edit" asp-route-id="@t.TrainingId"
+                                       class="btn btn-sm btn-icon" title="Edit"
+                                       style="color: #666; background: #f0f0f0; border: none; width: 36px; height: 36px; border-radius: 12px;">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@t.TrainingId"
+                                       class="btn btn-sm btn-icon" title="Delete"
+                                       style="color: #dc3545; background: #fee; border: none; width: 36px; height: 36px; border-radius: 12px;">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                }
+
+                                <!-- Document Download if exists -->
+                                @if (!string.IsNullOrEmpty(t.DocumentUrl))
+                                {
+                                    <a asp-action="DownloadDocument"
+                                       asp-route-fileName="@t.DocumentUrl"
+                                       class="btn btn-sm btn-icon" title="Download"
+                                       style="color: #28a745; background: #e8f5e8; border: none; width: 36px; height: 36px; border-radius: 12px;">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    string GetStatusClass(string status) => status?.ToLower() switch
+    {
+        "approved" => "bg-success text-white",
+        "pending" => "bg-warning text-dark",
+        "rejected" => "bg-danger text-white",
+        _ => "bg-secondary text-white"
+    };
+}
+
+<style>
+    .listile {
+        transition: all 0.2s ease;
+    }
+
+        .listile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(107,70,193,0.12) !important;
+        }
+
+    .status-chip {
+        font-size: 0.65rem;
+        line-height: 1.2;
+    }
+
+    .btn-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+        .btn-icon:hover {
+            transform: scale(1.1);
+        }
+
+    .list-group-item {
+        border: none !important;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <!-- YOUR ORIGINAL TOAST SCRIPT – UNCHANGED -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toastEl = document.getElementById("successToast");
+            if (toastEl) {
+                const toast = new bootstrap.Toast(toastEl, {
+                    delay: 3000
+                });
+                toast.show();
+
+                toastEl.addEventListener('hidden.bs.toast', () => {
+                    toastEl.remove();
+                });
+            }
+        });
+    </script>
+}

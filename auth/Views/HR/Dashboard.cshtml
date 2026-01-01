@@ -1,0 +1,137 @@
+﻿@model Auth.Models.Models.UserModel
+@{
+    Layout = "~/Views/Shared/_InsideLayoutHR.cshtml";
+    ViewData["Title"] = "Dashboard";
+    // var profilePic = Context.Session.GetString("ProfilePictureUrl") ?? "~/images/default-profile.png";
+    // var userId = Context.Session.GetString("UserId");
+    
+}
+
+<style>
+    .dashboard-title {
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 4rem;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+        .dashboard-title img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: rgba(255,255,255,0.25);
+        }
+
+    .dashboard-row {
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-card {
+        background: rgba(255,255,255,0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        padding: 2.5rem 0;
+        height: 200px;
+        border-radius: 16px;
+    }
+
+        .dashboard-card:hover {
+            transform: scale(1.07);
+            box-shadow: 0 0 25px rgba(108, 92, 231, 0.6);
+            background: rgba(255,255,255,0.15);
+        }
+
+    .dashboard-icon {
+        width: 55px;
+        height: 55px;
+        margin-bottom: 15px;
+        color: #00d8ff;
+    }
+
+    a.dashboard-link {
+        text-decoration: none;
+        color: inherit;
+    }
+</style>
+
+<div class="container-fluid text-white">
+    <div class="dashboard-title">
+        <h3>Welcome @Model.FullName</h3>
+    </div>
+
+    <div class="row g-4 justify-content-center dashboard-row">
+        <div class="col-md-4 col-lg-3">
+            <a href="/HR/GapAnalysis" class="dashboard-link">
+                <div class="card border-0 shadow-sm text-center dashboard-card">
+                    <div class="card-body">
+                        <i data-lucide="target" class="dashboard-icon"></i>
+                        <h6 class="fw-semibold text-white">Skill Gap Analysis</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="/HR/Audits" class="dashboard-link">
+                <div class="card border-0 shadow-sm text-center dashboard-card">
+                    <div class="card-body">
+                        <i data-lucide="history" class="dashboard-icon"></i>
+                        <h6 class="fw-semibold text-white">Audit History</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="/HR/ProficiencyCharts" class="dashboard-link">
+                <div class="card border-0 shadow-sm text-center dashboard-card">
+                    <div class="card-body">
+                        <i data-lucide="bar-chart-3" class="dashboard-icon"></i>
+                        <h6 class="fw-semibold text-white">Skill Proficiency Charts</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center dashboard-row">
+        <div class="col-md-4 col-lg-3">
+            <a href="/HR/Notifications" class="dashboard-link">
+                <div class="card border-0 shadow-sm text-center dashboard-card">
+                    <div class="card-body">
+                        <i data-lucide="bell" class="dashboard-icon"></i>
+                        <h6 class="fw-semibold text-white">Alerts & Notifications</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="/HR/Trending" class="dashboard-link">
+                <div class="card border-0 shadow-sm text-center dashboard-card">
+                    <div class="card-body">
+                        <i data-lucide="trending-up" class="dashboard-icon"></i>
+                        <h6 class="fw-semibold text-white">Skill Trending</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="/HR/Trainings" class="dashboard-link">
+                <div class="card border-0 shadow-sm text-center dashboard-card">
+                    <div class="card-body">
+                        <i data-lucide="award" class="dashboard-icon"></i>
+                        <h6 class="fw-semibold text-white">Trainings</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    lucide.createIcons();
+</script>

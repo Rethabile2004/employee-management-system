@@ -1,0 +1,55 @@
+﻿@model List<Auth.Models.ViewModels.SkillProficiencyViewModel>
+
+@{
+    Layout = "~/Views/Shared/_InsideLayout.cshtml";
+    ViewData["Title"] = "Skill Proficiency Charts";
+}
+
+    <div class="back-btn-container">
+        <a href="@Url.Action("Dashboard", "Admin")" class="back-btn">
+            ← 
+        </a>
+    </div>
+
+<h3>Skill Proficiency Charts</h3>
+
+<canvas id="skillChart" width="400" height="200"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(m => m.SkillName)));
+    const data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(m => m.AverageLevel)));
+
+    const ctx = document.getElementById('skillChart').getContext('2d');
+    const skillChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Average Skill Level',
+                data: data,
+                backgroundColor: data.map(level =>
+                    level <= 1 ? '#f39c12' : level <= 2 ? '#3498db' : '#2ecc71'
+                ),
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 3,
+                    ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                            return value == 1 ? 'Beginner' :
+                                   value == 2 ? 'Intermediate' :
+                                   value == 3 ? 'Advanced' : '';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>

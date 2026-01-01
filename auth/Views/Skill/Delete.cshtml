@@ -1,0 +1,95 @@
+﻿@model Auth.Models.Models.SkillModel
+
+@{
+    // Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+    ViewData["Title"] = "Remove Skill";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-danger text-white">
+            <h3 class="mb-0 fw-semibold">Remove Skill</h3>
+        </div>
+
+        <div class="card-body bg-light-subtle">
+            <p class="text-muted mb-3">
+                You’re about to permanently remove this skill. This action
+                <span class="fw-bold text-danger">cannot be undone</span>.
+            </p>
+
+            <div class="p-4 border rounded bg-white shadow-sm mb-3 border-light-subtle">
+                <p><strong>Skill Name:</strong> <span class="text-secondary">@Model.SkillName</span></p>
+                <p><strong>Skill Level:</strong> <span class="text-secondary">@Model.SkillLevel</span></p>
+                <p><strong>Category:</strong> <span class="text-secondary">@Model.Category</span></p>
+                <p><strong>Status:</strong> <span class="badge bg-success">@Model.Status</span></p>
+            </div>
+
+            <form asp-action="DeleteConfirmed" method="post">
+                <input type="hidden" asp-for="SkillId" />
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-danger fw-semibold px-4">
+                        Delete
+                    </button>
+                    <a asp-action="List" class="btn btn-secondary fw-semibold px-4">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --purple: #6B46C1;
+        --light-bg: #F8F9FA;
+        --light-border: #E9ECEF;
+        --text-muted: #6C757D;
+        --dark: #1E1E1E;
+        --danger: #DC3545;
+    }
+
+    .bg-gradient-purple {
+        background: linear-gradient(90deg, var(--purple), var(--dark) 85%);
+    }
+
+    .bg-light-subtle {
+        background-color: var(--light-bg) !important;
+    }
+
+    .border-light-subtle {
+        border-color: var(--light-border) !important;
+    }
+
+    .text-purple {
+        color: var(--purple) !important;
+    }
+
+    .btn-danger {
+        background-color: var(--danger);
+        border-color: var(--danger);
+    }
+
+    .btn-secondary {
+        background-color: #4A4A4A;
+        border-color: #4A4A4A;
+        color: #fff;
+    }
+
+        .btn-danger:hover, .btn-secondary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+    .card {
+        border-radius: 12px;
+        transition: all 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+    .badge {
+        font-size: 0.85em;
+    }
+</style>

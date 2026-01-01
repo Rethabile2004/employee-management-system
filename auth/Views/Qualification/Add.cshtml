@@ -1,0 +1,204 @@
+﻿@model auth.Models.Models.QualificationModel
+
+@{
+    ViewData["Title"] = "Add Qualification";
+}
+
+<div class="min-vh-100 form-page-container" style=" padding: 2rem 0;">
+    <div class="container">
+        <!-- Back & Title -->
+        <div class="d-flex align-items-center mb-4">
+            <a asp-action="List" class="text-decoration-none me-3">
+                <i class="bi bi-arrow-left-circle-fill" style="font-size: 1.5rem; color: #6B46C1;"></i>
+            </a>
+            <div>
+                <h1 class="h3 mb-0 fw-bold" style="color: #333;">Create New Qualification</h1>
+                <p class="text-muted small mb-0">Fill in the details below to add your qualification</p>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card border-0 shadow-sm form-card" style="border-radius: 1rem; overflow: hidden;">
+            <div class="card-body p-4 p-md-5" style="">
+                <form asp-action="Add" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- Hidden Fields -->
+                    <input asp-for="QualificationId" type="hidden" />
+                    <input asp-for="UserId" type="hidden"/>
+                    <input asp-for="DateAdded" type="hidden" />
+                    <input asp-for="DateUpdated" type="hidden" />
+                    <input asp-for="Status" type="hidden" value="Pending" />
+
+                    <!-- Qualification Name -->
+                    <div class="mb-4">
+                        <label class="d-flex align-items-center mb-2">
+                            <i class="bi bi-mortarboard-fill me-2" style="color: #6B46C1;"></i>
+                            <span class="fw-bold" style="color: #333;">Qualification Name <span class="text-danger">*</span></span>
+                        </label>
+                        <input asp-for="QualificationName" 
+                               class="form-control form-control-lg" 
+                               placeholder="e.g., Bachelor of Science in Computer Science" 
+                               style="border: 1px solid #ccc; border-radius: 0.75rem; padding: 0.75rem 1rem; transition: all 0.2s;"
+                               required />
+                        <span asp-validation-for="QualificationName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Institution -->
+                    <div class="mb-4">
+                        <label class="d-flex align-items-center mb-2">
+                            <i class="bi bi-building me-2" style="color: #6B46C1;"></i>
+                            <span class="fw-bold" style="color: #333;">Institution <span class="text-danger">*</span></span>
+                        </label>
+                        <select asp-for="InstitutionName" 
+                                id="institutionSelect" 
+                                class="form-select form-select-lg" 
+                                style="border: 1px solid #ccc; border-radius: 0.75rem; padding: 0.75rem 1rem;"
+                                required onchange="handleInstitutionChange(this)">
+                            <option value="">Select an institution</option>
+                            <option value="University of Cape Town" data-id="UCT">University of Cape Town</option>
+                            <option value="University of the Witwatersrand" data-id="WITS">University of the Witwatersrand</option>
+                            <option value="Stellenbosch University" data-id="SUN">Stellenbosch University</option>
+                            <option value="University of Pretoria" data-id="UP">University of Pretoria</option>
+                            <option value="University of Johannesburg" data-id="UJ">University of Johannesburg</option>
+                            <option value="University of KwaZulu-Natal" data-id="UKZN">University of KwaZulu-Natal</option>
+                            <option value="University of the Western Cape" data-id="UWC">University of the Western Cape</option>
+                            <option value="North-West University" data-id="NWU">North-West University</option>
+                            <option value="University of the Free State" data-id="UFS">University of the Free State</option>
+                            <option value="Rhodes University" data-id="RU">Rhodes University</option>
+                            <option value="Nelson Mandela University" data-id="NMU">Nelson Mandela University</option>
+                            <option value="University of Fort Hare" data-id="UFH">University of Fort Hare</option>
+                            <option value="Walter Sisulu University" data-id="WSU">Walter Sisulu University</option>
+                            <option value="Tshwane University of Technology" data-id="TUT">Tshwane University of Technology</option>
+                            <option value="Cape Peninsula University of Technology" data-id="CPUT">Cape Peninsula University of Technology</option>
+                            <option value="Central University of Technology" data-id="CUT">Central University of Technology</option>
+                            <option value="Durban University of Technology" data-id="DUT">Durban University of Technology</option>
+                            <option value="Mangosuthu University of Technology" data-id="MUT">Mangosuthu University of Technology</option>
+                            <option value="Vaal University of Technology" data-id="VUT">Vaal University of Technology</option>
+                            <option value="Other" data-id="OTHER">Other</option>
+                        </select>
+                        <span asp-validation-for="InstitutionName" class="text-danger small"></span>
+
+                        <!-- Other Institution Input -->
+                        <div id="otherInstitutionField" class="mt-3" style="display: none;">
+                            <input type="text" id="otherInstitutionName" class="form-control" 
+                                   placeholder="Enter institution name" 
+                                   style="border: 1px solid #ccc; border-radius: 0.75rem;" />
+                            <input type="hidden" id="InstitutionId" name="InstitutionId" value="" />
+                            <small class="form-text text-muted">Please enter the full name of the institution</small>
+                        </div>
+                    </div>
+
+                    <!-- Completion Year -->
+                    <div class="mb-4">
+                        <label class="d-flex align-items-center mb-2">
+                            <i class="bi bi-calendar-check-fill me-2" style="color: #6B46C1;"></i>
+                            <span class="fw-bold" style="color: #333;">Year Obtained <span class="text-danger">*</span></span>
+                        </label>
+                        <input asp-for="CompletionYear" 
+                               type="number" 
+                               class="form-control form-control-lg" 
+                               placeholder="e.g., 2020" 
+                               min="1900" max="2025" 
+                               style="border: 1px solid #ccc; border-radius: 0.75rem; padding: 0.75rem 1rem;"
+                               required />
+                        <span asp-validation-for="CompletionYear" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Certificate Upload -->
+                    <div class="mb-4">
+                        <label class="d-flex align-items-center mb-2">
+                            <i class="bi bi-file-earmark-arrow-up-fill me-2" style="color: #6B46C1;"></i>
+                            <span class="fw-bold" style="color: #333;">Upload Certificate <span class="text-danger">*</span></span>
+                        </label>
+                        <input type="file" 
+                               id="certificationFile" 
+                               name="certificationFile" 
+                               class="form-control form-control-lg" 
+                               accept="image/*" 
+                               style="border: 1px solid #ccc; border-radius: 0.75rem; padding: 0.75rem 1rem;"
+                               required />
+                        <small class="form-text text-muted">JPG, PNG, or WebP only</small>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex gap-3 justify-content-end mt-5">
+                        <a asp-action="List" 
+                           class="btn btn-lg px-4" 
+                           style="background-color: #ccc; color: #333; border: none; border-radius: 0.75rem;">
+                            Cancel
+                        </a>
+                        <button type="submit" 
+                                class="btn btn-lg px-5" 
+                                style="background-color: #6B46C1; color: white; border: none; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);">
+                            Save Qualification
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Handle "Other" institution
+        function handleInstitutionChange(select) {
+            const otherField = document.getElementById('otherInstitutionField');
+            const institutionIdInput = document.getElementById('InstitutionId');
+            const otherInstitutionInput = document.getElementById('otherInstitutionName');
+
+            if (select.value === 'Other') {
+                otherField.style.display = 'block';
+                institutionIdInput.value = 'OTHER';
+            } else {
+                otherField.style.display = 'none';
+                otherInstitutionInput.value = '';
+                const selectedOption = select.options[select.selectedIndex];
+                institutionIdInput.value = selectedOption.dataset.id || '';
+            }
+        }
+
+        // Bootstrap validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+
+        // Focus glow effect
+        document.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('focus', function() {
+                this.style.boxShadow = '0 0 0 0.2rem rgba(107, 70, 193, 0.25)';
+                this.style.borderColor = '#6B46C1';
+            });
+            el.addEventListener('blur', function() {
+                this.style.boxShadow = 'none';
+                this.style.borderColor = '#ccc';
+            });
+        });
+    </script>
+}
+
+<style>
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #6B46C1 !important;
+        box-shadow: 0 0 0 0.2rem rgba(107, 70, 193, 0.25) !important;
+    }
+    .card {
+        border: 1px solid #ddd;
+    }
+</style>

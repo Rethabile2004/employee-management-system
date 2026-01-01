@@ -1,0 +1,102 @@
+﻿@model Auth.Models.Models.TrainingModel
+
+@{
+    ViewData["Title"] = "Remove Training";
+    // Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-danger text-white">
+            <h2 class="mb-0 fw-semibold">Remove Training Record</h2>
+        </div>
+
+        <div class="card-body bg-light-subtle">
+            <p class="text-muted mb-4">
+                You’re about to permanently remove this training record.
+                This action <span class="fw-bold text-danger">cannot be undone</span>.
+            </p>
+
+            <div class="p-4 border rounded bg-white shadow-sm border-light-subtle">
+                <h5 class="fw-bold mb-3 text-dark">@Model.TrainingName</h5>
+                <p class="mb-1"><strong>Description:</strong> <span class="text-secondary">@Model.Description</span></p>
+                <p class="mb-1"><strong>Provider:</strong> <span class="text-secondary">@Model.Provider</span></p>
+                <p class="mb-1"><strong>Duration:</strong> <span class="text-secondary">@Model.StartDate.ToShortDateString() to @Model.EndDate.ToShortDateString()</span></p>
+                <p class="mb-0"><strong>Status:</strong> <span class="badge bg-success">@Model.CompletionStatus</span></p>
+            </div>
+
+            <div class="alert alert-danger mt-4 border-0 shadow-sm">
+                <strong>Warning:</strong> Once deleted, this record cannot be recovered.
+            </div>
+
+            <form asp-action="DeleteConfirmed" method="post" class="mt-4">
+                <input type="hidden" asp-for="TrainingId" />
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-danger fw-semibold px-4">
+                        Delete
+                    </button>
+                    <a asp-action="List" class="btn btn-secondary fw-semibold px-4">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<style>
+    :root {
+        --purple: #6B46C1;
+        --light-bg: #F8F9FA;
+        --light-border: #E9ECEF;
+        --text-muted: #6C757D;
+        --dark: #1E1E1E;
+        --danger: #DC3545;
+    }
+
+    .bg-gradient-purple {
+        background: grey;
+    }
+
+    .bg-light-subtle {
+        background-color: var(--light-bg) !important;
+    }
+
+    .border-light-subtle {
+        border-color: var(--light-border) !important;
+    }
+
+    .text-purple {
+        color: var(--purple) !important;
+    }
+
+    .btn-danger {
+        background-color: var(--danger);
+        border-color: var(--danger);
+    }
+
+    .btn-secondary {
+        background-color: #4A4A4A;
+        border-color: #4A4A4A;
+        color: #fff;
+    }
+
+        .btn-danger:hover, .btn-secondary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+    .card {
+        border-radius: 12px;
+        transition: all 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+    .badge {
+        font-size: 0.85em;
+    }
+</style>

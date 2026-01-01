@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - auth</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/auth.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <a href="@Url.Action("Dashboard", "HR")" class="brand">
+            <i class="bi bi-shield-lock-fill"></i>
+            <span>Streamline</span>
+        </a>
+        <nav class="mt-3">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
+               asp-controller="Employee" asp-action="Dashboard">
+                <i class="bi bi-house-door-fill"></i>
+                <span>Home</span>
+            </a>
+            @if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Qualification" ? "active" : "")"
+                   asp-controller="Qualification" asp-action="List">
+                    <i class="bi bi-mortarboard-fill"></i>
+                    <span>Qualifications</span>
+                </a>
+                <!-- Trainings -->
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Trainings" ? "active" : "")"
+                   asp-controller="Training" asp-action="List">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <span>Trainings</span>
+                </a>
+
+                <!-- Skills -->
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Skills" ? "active" : "")"
+                   asp-controller="Skill" asp-action="List">
+                    <i class="bi bi-award-fill"></i>
+                    <span>Skills</span>
+                </a>
+
+                <!-- Profile -->
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Profile" ? "active" : "")"
+                   asp-controller="Employee" asp-action="Profile">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Profile</span>
+                </a>
+
+                <!-- Notifications -->
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Notifications" ? "active" : "")"
+                   asp-controller="Notifications" asp-action="Index">
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </a>
+                <button id="themeToggle" class="btn btn-sm btn-icon" title="Toggle Theme"
+                        style="width: 40px; height: 40px; border-radius: 50%; background: #f0f0f0; color: #6B46C1; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                </button>
+                @* <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Report" ? "active" : "")"
+                   asp-controller="Report" asp-action="Index">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>Reports</span>
+                </a> *@
+            }
+            @* <a class="nav-link" asp-controller="Home" asp-action="Privacy">
+                <i class="bi bi-shield-check"></i>
+                <span>Privacy</span>
+            </a> *@
+        </nav>
+
+        <div class="mt-auto p-3">
+            @if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-block">
+                    <button type="submit" class="btn btn-outline-light w-100 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            }
+            else
+            {
+                <div class="d-flex gap-2">
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light flex-fill">
+                        Login
+                    </a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-light flex-fill">
+                        Register
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Toggle Button -->
+    <div class="sidebar-toggle" id="sidebarToggle">
+        <i class="bi bi-list togglecolor"></i>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    @* <!-- Footer -->
+    <footer id="footer">
+        <div class="container text-center">
+            &copy; 2025 - Streamline - <a asp-controller="Account" asp-action="Login">Privacy</a>
+        </div>
+    </footer> *@
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            // apiKey: "AIzaSyCQ18F9ZdFe3m-6_okumX9oWD-xye56V9A",
+            // authDomain: "auth-6e74c.firebaseapp.com",
+            // projectId: "auth-6e74c",
+            // storageBucket: "auth-6e74c.firebasestorage.app",
+            // messagingSenderId: "254605682813",
+            // appId: "1:254605682813:web:fbc1564feb1464ac9de914",
+            // measurementId: "G-ESQW640JSH"
+        apiKey: "AIzaSyD2-E9jW53iRWevFV2YqDPAtGsjzHUqfk4",
+          authDomain: "streamline-4994a.firebaseapp.com",
+          projectId: "streamline-4994a",
+          storageBucket: "streamline-4994a.firebasestorage.app",
+          messagingSenderId: "719692478764",
+          appId: "1:719692478764:web:057ac09645b98bc3a39489",
+          measurementId: "G-FMNT0PLDDF"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <!-- Sidebar Toggle Script -->
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const footer = document.getElementById('footer');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const toggleIcon = toggleBtn.querySelector('i');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+            footer.classList.toggle('collapsed');
+            toggleBtn.classList.toggle('collapsed');
+
+            if (sidebar.classList.contains('collapsed')) {
+                toggleIcon.classList.replace('bi-list', 'bi-arrow-right');
+            } else {
+                toggleIcon.classList.replace('bi-arrow-right', 'bi-list');
+            }
+        });
+
+        // Auto-collapse on mobile
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('collapsed');
+            footer.classList.add('collapsed');
+            toggleBtn.classList.add('collapsed');
+            toggleIcon.classList.replace('bi-list', 'bi-arrow-right');
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toggle = document.getElementById("themeToggle");
+            const icon = document.getElementById("themeIcon");
+            const html = document.documentElement;
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem("theme") || "light";
+            html.setAttribute("data-theme", savedTheme);
+            updateIcon(savedTheme);
+
+            // Toggle on click
+            toggle.addEventListener("click", () => {
+                const current = html.getAttribute("data-theme");
+                const newTheme = current === "dark" ? "light" : "dark";
+
+                html.setAttribute("data-theme", newTheme);
+                localStorage.setItem("theme", newTheme);
+                updateIcon(newTheme);
+            });
+
+            function updateIcon(theme) {
+                icon.className = theme === "dark"
+                    ? "bi bi-sun-fill"
+                    : "bi bi-moon-stars-fill";
+            }
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

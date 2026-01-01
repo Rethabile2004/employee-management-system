@@ -1,0 +1,128 @@
+﻿@model Auth.Models.ViewModels.AuditViewModel
+
+@{
+    Layout = "~/Views/Shared/_InsideLayout.cshtml";
+    ViewData["Title"] = "Audit Details";
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 fw-bold mb-0">Audit Details</h2>
+        <a asp-action="Audits" asp-controller="Admin" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i>
+            Back to List
+        </a>
+    </div>
+
+    <!-- Audit Card -->
+    <div class="audit-detail-card card border-0 shadow-sm rounded-3 overflow-hidden">
+        <div class="card-header bg-primary text-white py-3 px-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <h5 class="mb-0 fw-semibold">
+                    <i class="bi bi-file-earmark-check me-2"></i>
+                    Audit #@Model.AuditId
+                </h5>
+                <span class="badge bg-light text-primary fs-6" style="color:bl">
+                    @Model.Date
+                </span>
+            </div>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+            <div class="row g-4">
+                <!-- Left Column -->
+                <div class="col-lg-6">
+                    <div class="detail-item d-flex align-items-start gap-3 mb-4">
+                        <div class="detail-icon">
+                            <i class="bi bi-hash text-primary"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted text-uppercase fw-medium">Audit ID</small>
+                            <p class="mb-0 fw-semibold text-lg">@Model.AuditId</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item d-flex align-items-start gap-3 mb-4">
+                        <div class="detail-icon">
+                            <i class="bi bi-person text-info"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted text-uppercase fw-medium">User ID</small>
+                            <p class="mb-0 fw-semibold">@Model.UserId</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item d-flex align-items-start gap-3 mb-4">
+                        <div class="detail-icon">
+                            <i class="bi bi-person-badge text-success"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted text-uppercase fw-medium">Full Name</small>
+                            <p class="mb-0 fw-semibold">@ViewBag.UserFullName</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="detail-item d-flex align-items-start gap-3 mb-4">
+                    <div class="detail-icon">
+                        <i class="bi bi-person-check text-purple"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted text-uppercase fw-medium">Action performed</small>
+                        <p class="mb-0 fw-semibold">@Model.Action</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="detail-item d-flex align-items-start gap-3 mb-4">
+                        <div class="detail-icon">
+                            <i class="bi bi-calendar3 text-warning"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted text-uppercase fw-medium">Audit Date</small>
+                            <p class="mb-0 fw-semibold">@Model.Date</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item d-flex align-items-start gap-3 mb-4">
+                        <div class="detail-icon">
+                            <i class="bi bi-person-check text-purple"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted text-uppercase fw-medium">Audited By</small>
+                            <p class="mb-0 fw-semibold">@Model.AuditedBy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <hr class="my-4">
+            <div class="d-flex flex-column flex-md-row gap-3 justify-content-end">
+                <a asp-action="UserDetails"
+                   asp-controller="Admin"
+                   asp-route-id="@Model.UserId"
+                   class="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-person-lines-fill"></i>
+                    View User Profile
+                </a>
+                <button class="btn btn-success d-flex align-items-center justify-content-center gap-2"
+                        onclick="downloadAuditReport(@Model.AuditId)">
+                    <i class="bi bi-download"></i>
+                    Download Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function downloadAuditReport(auditId) {
+            // Replace with actual export logic
+            alert(`Generating PDF report for Audit #${auditId}...`);
+            // window.location = `/Admin/ExportAuditPdf?auditId=${auditId}`;
+        }
+    </script>
+}

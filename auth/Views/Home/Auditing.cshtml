@@ -1,0 +1,92 @@
+﻿@{
+    ViewData["Title"] = "Skill Auditing";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #e6d9ff; /* light purple */
+    }
+
+    .auditing-container {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .auditing-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        text-align: center;
+    }
+
+        .auditing-card h1 {
+            color: #5a2ea6;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .auditing-card p {
+            color: #444;
+            font-size: 1.05rem;
+            margin-bottom: 25px;
+        }
+
+        .auditing-card ul {
+            text-align: left;
+            color: #333;
+            line-height: 1.7;
+            margin: 0 auto 30px;
+            max-width: 600px;
+        }
+
+            .auditing-card ul li::marker {
+                color: #5a2ea6;
+            }
+
+        .auditing-card .btn-primary {
+            background-color: #5a2ea6;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .auditing-card .btn-primary:hover {
+                background-color: #4b2390;
+                transform: translateY(-2px);
+            }
+</style>
+
+<div class="auditing-container">
+    <div class="auditing-card">
+        <h1>Skill Auditing</h1>
+        <p>
+            Streamline’s Skill Auditing module empowers organizations to assess, track, and analyze employee skill sets in real time.
+            This feature enhances transparency and helps decision-makers identify both strengths and training opportunities.
+        </p>
+
+        <h4 class="fw-bold mb-3" style="color:#5a2ea6;">Key Highlights</h4>
+        <ul>
+            <li>Real-time skill tracking and analytics dashboard.</li>
+            <li>Automated reporting for HR and management teams.</li>
+            <li>Custom skill frameworks aligned with organizational goals.</li>
+            <li>Visual charts and gap analysis tools.</li>
+        </ul>
+
+        <p>
+            This feature assists organizations in recognizing top performers, maintaining an updated skill database,
+            and planning training programs more effectively.
+        </p>
+
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-3">
+            ← Back to Home
+        </a>
+    </div>
+</div>

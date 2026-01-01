@@ -1,0 +1,408 @@
+﻿@model Auth.Models.ViewModels.UserDetailsViewModel
+
+@{
+    Layout = "~/Views/Shared/_InsideLayoutHR.cshtml";
+    ViewData["Title"] = "User Details";
+}
+
+<style>
+    .heading-custom h4, .heading-custom small {
+        color: white !important;
+    }
+
+    .btn-outline-primary {
+        color: var(--bs-primary);
+        border-color: var(--bs-primary);
+    }
+
+        .btn-outline-primary:hover {
+            color: #fff;
+            background-color: var(--bs-primary);
+            border-color: var(--bs-primary);
+        }
+
+    /* Ensure visibility in dark mode */
+    [data-bs-theme="dark"] .table-light {
+        background-color: #2c2c2c;
+        color: #eaeaea;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 fw-bold mb-0">Employee Details</h2>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i>
+            Back to Dashboard
+        </a>
+    </div>
+
+    @if (Model?.User != null)
+    {
+        var user = Model.User;
+
+        <!-- Main Profile Card -->
+        <div class="profile-card card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+            <div class="card-header bg-purple text-white py-3 px-4 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="profile-avatar rounded-circle bg-white text-purple d-flex align-items-center justify-content-center"
+                         style="width: 50px; height: 50px; font-weight: 700; font-size: 1.1rem;">
+                        @user.FullName.Substring(0, 1).ToUpper()
+                    </div>
+                    <div class="heading-custom">
+                        <h4 class="mb-0" style="color:white">@user.FullName</h4>
+                        <small class="opacity-90">@user.Email</small>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <span class="badge bg-light text-purple px-3 py-2">
+                        <i class="bi bi-briefcase me-1"></i>@user.Position
+                    </span>
+                    <span class="badge bg-light text-purple px-3 py-2">
+                        <i class="bi bi-building me-1"></i>@user.Department
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <div class="info-item p-3 rounded-3 border">
+                            <small class="text-muted text-uppercase fw-medium">Joined Date</small>
+                            <p class="mb-0 fw-semibold">@user.DateAdded</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item p-3 rounded-3 border">
+                            <small class="text-muted text-uppercase fw-medium">Status</small>
+                            <p class="mb-0 fw-semibold">
+                                <span class="badge bg-@(user.Status == "Active" ? "success" : "secondary")">
+                                    @user.Status
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ======================= SKILLS ======================= -->
+                <div class="section-card mb-4">
+                    <h5 class="section-title">
+                        <i class="bi bi-award text-purple me-2"></i>
+                        Skills
+                    </h5>
+                    @if (Model.Skills?.Any() == true)
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Skill</th>
+                                        <th>Proficiency</th>
+                                        <th>Status</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var skill in Model.Skills)
+                                    {
+                                        var isApproved = skill.Status == "Approved";
+                                        var isRejected = skill.Status == "Rejected";
+                                        var isPending = skill.Status == "Pending";
+
+                                        <tr>
+                                            <td class="fw-medium">@skill.SkillName</td>
+                                            <td>
+                                                <span class="badge bg-info text-dark">@skill.SkillLevel</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge @(isApproved ? "bg-success" : isPending ? "bg-warning text-dark" : "bg-danger")">
+                                                    @skill.Status
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                @if (isPending)
+                                                {
+                                                    <form asp-action="ApproveSkill" asp-controller="HR" method="post" class="d-inline">
+                                                        <input type="hidden" name="skillId" value="@skill.SkillId" />
+                                                        <button type="submit"
+                                                                class="btn btn-success btn-sm action-btn"
+                                                                onclick="return showRecommendModal('@skill.SkillName')">
+                                                            <i class="bi bi-check"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form asp-action="RejectSkill" asp-controller="HR" method="post" class="d-inline">
+                                                        <input type="hidden" name="skillId" value="@skill.SkillId" />
+                                                        <input type="hidden" name="reason" value="Not verified" />
+                                                        <button type="submit" class="btn btn-danger btn-sm action-btn">
+                                                            <i class="bi bi-x"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn btn-sm @(isApproved ? "btn-success" : "btn-danger")" disabled>
+                                                        @(isApproved ? "Approved" : "Rejected")
+                                                    </button>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No skills recorded.</p>
+                    }
+                </div>
+
+                <!-- ======================= QUALIFICATIONS ======================= -->
+                <div class="section-card mb-4">
+                    <h5 class="section-title">
+                        <i class="bi bi-mortarboard-fill text-purple me-2"></i>
+                        Qualifications
+                    </h5>
+                    @if (Model.Qualifications?.Any() == true)
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Qualification</th>
+                                        <th>Institution</th>
+                                        <th>Year</th>
+                                        <th>Status</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var q in Model.Qualifications)
+                                    {
+                                        var isApproved = q.Status == "Approved";
+                                        var isRejected = q.Status == "Rejected";
+                                        var isPending = q.Status == "Pending";
+
+                                        <tr>
+                                            <td class="fw-medium">@q.QualificationName</td>
+                                            <td>@q.InstitutionName</td>
+                                            <td>@q.CompletionYear</td>
+                                            <td>
+                                                <span class="badge @(isApproved ? "bg-success" : isPending ? "bg-warning text-dark" : "bg-danger")">
+                                                    @q.Status
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                @if (!string.IsNullOrEmpty(q.CertificationUrl))
+                                                {
+                                                    <a asp-action="DownloadCertificate"
+                                                       asp-controller="HR"
+                                                       asp-route-userId="@user.UserId"
+                                                       target="_blank"
+                                                       asp-route-fileUrl="@q.CertificationUrl"
+                                                       asp-route-qualificationId="@q.QualificationId"
+                                                       asp-route-fileName="@System.IO.Path.GetFileName(q.CertificationUrl)"
+                                                       class="btn btn-outline-primary btn-sm me-1"
+                                                       title="Download Certificate">
+                                                        <i class="bi bi-download"></i>
+                                                    </a>
+                                                }
+
+                                                @if (isPending)
+                                                {
+                                                    <form asp-action="ApproveQualification" asp-controller="HR" method="post" class="d-inline">
+                                                        <input type="hidden" name="qualificationId" value="@q.QualificationId" />
+                                                        <button type="submit" class="btn btn-success btn-sm action-btn">
+                                                            <i class="bi bi-check"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form asp-action="RejectQualification" asp-controller="HR" method="post" class="d-inline">
+                                                        <input type="hidden" name="qualificationId" value="@q.QualificationId" />
+                                                        <input type="hidden" name="reason" value="Invalid document" />
+                                                        <button type="submit" class="btn btn-danger btn-sm action-btn">
+                                                            <i class="bi bi-x"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn btn-sm @(isApproved ? "btn-success" : "btn-danger")" disabled>
+                                                        @(isApproved ? "Approved" : "Rejected")
+                                                    </button>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No qualifications recorded.</p>
+                    }
+                </div>
+
+                <!-- ======================= TRAININGS ======================= -->
+                <div class="section-card mb-4">
+                    <h5 class="section-title">
+                        <i class="bi bi-journal-bookmark text-purple me-2"></i>
+                        Trainings
+                    </h5>
+                    @if (Model.Trainings?.Any() == true)
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Training</th>
+                                        <th>Provider</th>
+                                        <th>Period</th>
+                                        <th>Status</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var t in Model.Trainings)
+                                    {
+                                        var isApproved = t.CompletionStatus == "Approved";
+                                        var isRejected = t.CompletionStatus == "Rejected";
+                                        var isPending = t.CompletionStatus == "Pending";
+
+                                        <tr>
+                                            <td class="fw-medium">@t.TrainingName</td>
+                                            <td>@t.Provider</td>
+                                            <td>
+                                                <small>@t.StartDate – @t.EndDate</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge @(isApproved ? "bg-success" : isPending ? "bg-warning text-dark" : "bg-danger")">
+                                                    @t.CompletionStatus
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                @if (!string.IsNullOrEmpty(t.DocumentUrl))
+                                                {
+                                                    <a asp-action="DownloadCertificate"
+                                                       asp-controller="HR"
+                                                       target="_blank"
+                                                       asp-route-userId="@user.UserId"
+                                                       asp-route-trainingId="@t.TrainingId"
+                                                       asp-route-fileUrl="@t.DocumentUrl"
+                                                       asp-route-fileName="@System.IO.Path.GetFileName(t.DocumentUrl)"
+                                                       class="btn btn-outline-primary btn-sm me-1"
+                                                       title="Download Training Document">
+                                                        <i class="bi bi-download"></i>
+                                                    </a>
+                                                }
+
+                                                @if (isPending)
+                                                {
+                                                    <form asp-action="ApproveTraining" asp-controller="HR" method="post" class="d-inline">
+                                                        <input type="hidden" name="trainingId" value="@t.TrainingId" />
+                                                        <button type="submit" class="btn btn-success btn-sm action-btn">
+                                                            <i class="bi bi-check"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form asp-action="RejectTraining" asp-controller="HR" method="post" class="d-inline">
+                                                        <input type="hidden" name="trainingId" value="@t.TrainingId" />
+                                                        <input type="hidden" name="reason" value="Incomplete" />
+                                                        <button type="submit" class="btn btn-danger btn-sm action-btn">
+                                                            <i class="bi bi-x"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn btn-sm @(isApproved ? "btn-success" : "btn-danger")" disabled>
+                                                        @(isApproved ? "Approved" : "Rejected")
+                                                    </button>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No trainings recorded.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- ======================= RECOMMEND TRAINING MODAL ======================= -->
+<div class="modal fade" id="recommendTrainingModal" tabindex="-1" aria-labelledby="recommendTrainingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 overflow-hidden">
+            <div class="modal-header bg-purple text-white">
+                <h5 class="modal-title" id="recommendTrainingModalLabel">
+                    <i class="bi bi-lightbulb me-2"></i>Recommend Training
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="trainingRecommendationText" class="mb-3"></p>
+                <form id="recommendTrainingForm">
+                    <div class="mb-3">
+                        <label for="trainingDescription" class="form-label fw-medium">Training Description</label>
+                        <textarea class="form-control" id="trainingDescription" rows="3" placeholder="e.g., Advanced Excel for Data Analysis"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="trainingDate" class="form-label fw-medium">Proposed Date</label>
+                        <input type="date" class="form-control" id="trainingDate" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-purple rounded-pill" onclick="saveRecommendation()">
+                    <i class="bi bi-save me-1"></i>Save Recommendation
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentSkillName = "";
+
+        function showRecommendModal(skillName) {
+            currentSkillName = skillName;
+            document.getElementById("trainingRecommendationText").textContent =
+                `Would you like to recommend training related to "${skillName}"?`;
+            const modal = new bootstrap.Modal(document.getElementById("recommendTrainingModal"));
+            modal.show();
+            return true;
+        }
+
+        function saveRecommendation() {
+            const description = document.getElementById("trainingDescription").value.trim();
+            const date = document.getElementById("trainingDate").value;
+
+            if (!description) {
+                alert("Please enter a training description.");
+                return;
+            }
+
+            alert(`Training recommendation saved for "${currentSkillName}":\n${description}\nDate: ${date || 'TBD'}`);
+
+            bootstrap.Modal.getInstance(document.getElementById("recommendTrainingModal")).hide();
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            @if (TempData["ShowRecommendModal"] != null)
+            {
+                    <text>
+                        showRecommendModal("@TempData["RecommendedSkillName"]");
+                    </text>
+            }
+        });
+    </script>
+}

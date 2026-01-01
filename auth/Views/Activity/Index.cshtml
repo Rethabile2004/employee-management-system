@@ -1,0 +1,73 @@
+﻿@using Streamline.Controllers
+@{
+    var activities = ViewBag.Activities as List<ActivityLogItem> ?? new();
+    ViewData["Title"] = "Activity Log";
+}
+
+<div class="min-vh-100" style="padding: 2rem 0;">
+    <div class="container">
+        <!-- Header -->
+        <div class="d-flex align-items-center mb-4">
+            <a asp-controller="Employee" asp-action="Dashboard" class="text-decoration-none me-3">
+                <i class="bi bi-arrow-left-circle-fill" style="font-size: 1.5rem; color: #6B46C1;"></i>
+            </a>
+            <div>
+                <h1 class="h3 mb-0 fw-bold" style="color: #333;">Activity Log</h1>
+                <p class="text-muted small mb-0">Track all your profile updates</p>
+            </div>
+        </div>
+
+        <!-- Activity Timeline -->
+        <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
+            <div class="card-header p-3" style="background: linear-gradient(135deg, #6B46C1, #5E35B1); color: white;">
+                <h5 class="mb-0 fw-semibold">All Activities</h5>
+            </div>
+            <div class="card-body p-0">
+                @if (activities.Any())
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var activity in activities)
+                        {
+                            <a href="@activity.Link" class="list-group-item list-group-item-action p-4 d-flex align-items-start" style="transition: all 0.2s ease; border-left: 4px solid transparent;">
+                                <div class="me-3 mt-1">
+                                    <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background: rgba(107,70,193,0.1);">
+                                        <i class="@activity.Icon" style="font-size: 1.3rem;"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <p class="mb-1 fw-semibold" style="color: #333; font-size: 0.95rem;">
+                                        @Html.Raw(activity.Message)
+                                    </p>
+                                    <div class="d-flex align-items-center gap-3 text-muted small">
+                                        <span>@activity.Type</span>
+                                        <span>•</span>
+                                        <span>@activity.TimeAgo</span>
+                                    </div>
+                                </div>
+                                <i class="bi bi-chevron-right text-muted"></i>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="p-5 text-center text-muted">
+                        <i class="bi bi-activity display-1 opacity-10"></i>
+                        <p class="mt-3">No activity recorded yet</p>
+                        <a asp-controller="Skill" asp-action="Add" class="btn btn-sm px-4 mt-2" style="background: #6B46C1; color: white; border-radius: 50px;">
+                            Add Your First Skill
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

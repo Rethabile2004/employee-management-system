@@ -1,0 +1,259 @@
+﻿@using Auth.Models.Models
+@model UserModel
+
+@{
+    ViewData["Title"] = "Add Infor";
+}
+
+<div class="min-vh-100" style="background-color: #f0f0f0; padding: 2rem 0;">
+    <div class="container">
+        <!-- Back & Title -->
+        <div class="d-flex align-items-center mb-4">
+            <a asp-action="Profile" class="text-decoration-none me-3">
+                <i class="bi bi-arrow-left-circle-fill" style="font-size: 1.5rem; color: #6B46C1;"></i>
+            </a>
+            <div>
+                <h1 class="h3 mb-0 fw-bold" style="color: #333;">Edit Profile</h1>
+                <p class="text-muted small mb-0">Update your personal and professional details</p>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
+            <div class="card-body p-4 p-md-5" style="background-color: #ffffff;">
+                <form asp-controller="Employee"
+                      asp-action="Add"
+                      method="post"
+                      class="needs-validation"
+                      novalidate
+                      enctype="multipart/form-data">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- Hidden Fields -->
+                    <input asp-for="UserId" type="hidden"/>
+                    <input asp-for="Password" type="hidden" />
+                    
+                    <input asp-for="Status" type="hidden" />
+                    <input asp-for="DateAdded" type="hidden" />
+                    <input asp-for="DateUpdated" type="hidden" />
+                    <input asp-for="LastLogin" type="hidden" />
+                    <input asp-for="ProfilePicture" type="hidden" />
+
+                    <!-- Profile Image Upload -->
+                    <div class="text-center mb-5">
+                        <div class="mx-auto mb-3" style="width: 140px; height: 140px;">
+                            <img id="profileImage"
+                                 src="@(string.IsNullOrEmpty(Model.ProfilePicture)
+                                                                                                         ? "/images/default-avatar.png"
+                                                                                                         : Url.Content("~/images/" + Model.ProfilePicture))"
+                                 alt="Profile Picture"
+                                 class="img-fluid rounded-circle shadow-sm"
+                                 style="width: 100%; height: 100%; object-fit: cover; border: 4px solid #6B46C1;" />
+                        </div>
+
+                        <div>
+                            <input type="file"
+                                   name="profileFile"
+                                   id="profileFile"
+                                   class="form-control form-control-lg text-center"
+                                   style="max-width: 300px; margin: 0 auto; border-radius: 0.75rem; border: 1px solid #ccc;" />
+                            <small class="form-text text-muted d-block mt-2">
+                                Max 5MB. Leave empty to keep current image.
+                            </small>
+                        </div>
+                    </div>
+
+                    <hr class="my-5" style="border-color: #ddd;" />
+
+                    <!-- Form Fields -->
+                    <div class="row g-4">
+                        <!-- Full Name -->
+                        <div class="col-md-6">
+                            <label class="d-flex align-items-center mb-2">
+                                <i class="bi bi-person-fill me-2" style="color: #6B46C1;"></i>
+                                <span class="fw-bold" style="color: #333;">Full Name <span class="text-danger">*</span></span>
+                            </label>
+                            <input asp-for="FullName"
+                                   class="form-control form-control-lg"
+                                   required
+                                   style="border-radius: 0.75rem; border: 1px solid #ccc;" />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-6">
+                            <label class="d-flex align-items-center mb-2">
+                                <i class="bi bi-envelope-fill me-2" style="color: #6B46C1;"></i>
+                                <span class="fw-bold" style="color: #333;">Email Address <span class="text-danger">*</span></span>
+                            </label>
+                            <input asp-for="Email"
+                                   type="email"
+                                   class="form-control form-control-lg"
+                                   required
+                                   style="border-radius: 0.75rem; border: 1px solid #ccc;" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="d-flex align-items-center mb-2">
+                                <i class="bi bi-person-fill me-2" style="color: #6B46C1;"></i>
+                                <span class="fw-bold" style="color: #333;">Department <span class="text-danger">*</span></span>
+                            </label>
+                            <input asp-for="Department"
+                                   class="form-control form-control-lg"
+                                   required
+                                   style="border-radius: 0.75rem; border: 1px solid #ccc;" />
+                            <span asp-validation-for="Department" class="text-danger small"></span>
+                        </div>
+                        <!-- Role (Readonly) -->
+                        <div class="col-md-6">
+                            <label class="d-flex align-items-center mb-2">
+                                <i class="bi bi-shield-fill me-2" style="color: #6B46C1;"></i>
+                                <span class="fw-bold" style="color: #333;">Role</span>
+                            </label>
+                            <input asp-for="Role"
+                                   class="form-control form-control-lg readonly-field"
+                                   
+                                   style="background-color: #f8f9fa; border-radius: 0.75rem;" />
+                        </div>
+
+                        <!-- Position -->
+                        <div class="col-md-6">
+                            <label class="d-flex align-items-center mb-2">
+                                <i class="bi bi-briefcase-fill me-2" style="color: #6B46C1;"></i>
+                                <span class="fw-bold" style="color: #333;">Position</span>
+                            </label>
+                            <input asp-for="Position"
+                                   class="form-control form-control-lg"
+                                   style="border-radius: 0.75rem; border: 1px solid #ccc;" />
+                            <span asp-validation-for="Position" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Date Added (Readonly) -->
+                        <div class="col-md-6">
+                            <label class="d-flex align-items-center mb-2">
+                                <i class="bi bi-calendar-plus-fill me-2" style="color: #6B46C1;"></i>
+                                <span class="fw-bold" style="color: #333;">Date Added</span>
+                            </label>
+                            <input value="@Model.DateAdded.ToString("dd MMM yyyy")"
+                                   class="form-control form-control-lg readonly-field"
+                                   readonly
+                                   style="background-color: #f8f9fa; border-radius: 0.75rem;" />
+                        </div>
+
+                        <!-- Last Updated (Readonly) -->
+                        <div class="col-md-6">
+                            <label class="d-flex align-items-center mb-2">
+                                <i class="bi bi-clock-history me-2" style="color: #6B46C1;"></i>
+                                <span class="fw-bold" style="color: #333;">Last Updated</span>
+                            </label>
+                            <input value="@(Model.DateUpdated != default ? Model.DateUpdated.ToString("dd MMM yyyy HH:mm") : "Never")"
+                                   class="form-control form-control-lg readonly-field"
+                                   readonly
+                                   style="background-color: #f8f9fa; border-radius: 0.75rem;" />
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex gap-3 justify-content-end mt-5">
+
+                        @* <a asp-action="Dashboard"
+                           class="btn btn-lg px-4"
+                           style="background-color: #ccc; color: #333; border: none; border-radius: 0.75rem;">
+                            Cancel
+                        </a> *@
+                        <button type="submit"
+                                class="btn btn-lg px-5"
+                                style="background: linear-gradient(135deg, #6B46C1, #5E35B1); color: white; border: none; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(107,70,193,0.3);">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusClass(string status) => status?.ToLower() switch
+    {
+        "active" => "bg-success text-white",
+        "inactive" => "bg-secondary text-white",
+        "suspended" => "bg-danger text-white",
+        _ => "bg-warning text-dark"
+    };
+}
+
+<style>
+    .readonly-field {
+        cursor: not-allowed;
+        opacity: 0.9;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #6B46C1 !important;
+        box-shadow: 0 0 0 0.2rem rgba(107, 70, 193, 0.25) !important;
+    }
+
+    .card {
+        border: 1px solid #ddd;
+    }
+
+    hr {
+        opacity: 0.3;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <!-- YOUR ORIGINAL SCRIPT – 100% UNCHANGED -->
+    <script>
+        const fileInput = document.getElementById("profileFile");
+        const profileImg = document.getElementById("profileImage");
+
+        fileInput?.addEventListener("change", function () {
+            const file = this.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert("Image must be under 5MB");
+                    this.value = "";
+                    return;
+                }
+                profileImg.src = URL.createObjectURL(file);
+            }
+        });
+    </script>
+
+    <!-- Bootstrap Validation + Focus Glow -->
+    <script>
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+
+        document.querySelectorAll('input, textarea').forEach(el => {
+            if (!el.hasAttribute('readonly')) {
+                el.addEventListener('focus', function() {
+                    this.style.boxShadow = '0 0 0 0.2rem rgba(107, 70, 193, 0.25)';
+                    this.style.borderColor = '#6B46C1';
+                });
+                el.addEventListener('blur', function() {
+                    this.style.boxShadow = 'none';
+                    this.style.borderColor = '#ccc';
+                });
+            }
+        });
+    </script>
+}

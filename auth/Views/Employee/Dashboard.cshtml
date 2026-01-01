@@ -1,0 +1,252 @@
+﻿@using Auth.Models.ViewModel
+@using auth.Models.Models
+@{
+    // Extract ViewBag data
+    var user = ViewBag.User as Auth.Models.Models.UserModel;
+    var pendingCount = ViewBag.PendingCount as int? ?? 0;
+    var skillsCount = ViewBag.SkillsCount as int? ?? 0;
+    var upcomingTrainings = ViewBag.UpcomingTrainings as int? ?? 0;
+    var unreadCount = ViewBag.UnreadNotifications as int? ?? 0;
+    var notifications = ViewBag.UnreadNotificationList as List<NotificationModel> ?? new();
+    var activities = ViewBag.RecentActivities as List<ActivityItem> ?? new();
+
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="min-vh-100" style="padding: 2rem 0;">
+    <div class="container">
+
+        <!-- Welcome Header -->
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold mb-2" style="color: #333;">
+                Welcome back,
+                <span style="background: linear-gradient(135deg, #6B46C1, #5E35B1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    @(user?.FullName ?? "Employee")
+                </span>!
+            </h1>
+            <p class="text-muted lead">Here's what's happening in your professional journey today.</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row g-4 mb-5">
+            <!-- Pending Approvals -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100 text-white" style="border-radius: 1rem; overflow: hidden; background: linear-gradient(135deg, #FF8F00, #FFB74D);">
+                    <div class="card-body d-flex align-items-center p-4">
+                        <div class="me-3">
+                            <i class="bi bi-hourglass-split" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-0 fw-bold ">@pendingCount</h3>
+                            <p class="mb-0 small opacity-75 heading-stat">Pending Approval</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Skills -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100 text-white" style="border-radius: 1rem; overflow: hidden; background: linear-gradient(135deg, #6B46C1, #5E35B1);">
+                    <div class="card-body d-flex align-items-center p-4">
+                        <div class="me-3">
+                            <i class="bi bi-lightning-charge-fill" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-0 fw-bold">@skillsCount</h3>
+                            <p class="mb-0 small opacity-75 heading-stat">Total Skills</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Trainings -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100 text-white" style="border-radius: 1rem; overflow: hidden; background: linear-gradient(135deg, #43A047, #66BB6A);">
+                    <div class="card-body d-flex align-items-center p-4">
+                        <div class="me-3">
+                            <i class="bi bi-calendar-event" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-0 fw-bold">@upcomingTrainings</h3>
+                            <p class="mb-0 small opacity-75 heading-stat">Upcoming</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Unread Notifications -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100 text-white position-relative" style="border-radius: 1rem; overflow: hidden; background: linear-gradient(135deg, #E53935, #F44336);">
+                    <div class="card-body d-flex align-items-center p-4">
+                        <div class="me-3">
+                            <i class="bi bi-bell-fill" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-0 fw-bold">@unreadCount</h3>
+                            <p class="mb-0 small opacity-75">Unread Alerts</p>
+                        </div>
+                        @*if (unreadCount > 0)
+                        {
+                            <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-white text-danger" style="background-color:purple; font-size: 0.65rem; padding: 0.35em 0.65em;">
+                                @unreadCount
+                            </span>
+                        }*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Recent Activities -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
+                    <div class="card-header d-flex justify-content-between align-items-center p-3" style="background: linear-gradient(135deg, #6B46C1, #5E35B1); color: white;">
+                        <h5 class="mb-0 fw-semibold">Recent Activity</h5>
+                        <a asp-action="Index" asp-controller="Activity" class="small text-white text-decoration-none">View all</a>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (activities.Any())
+                        {
+                            <div class="list-group list-group-flush">
+                                @foreach (var activity in activities)
+                                {
+                                    <a href="@activity.Link" class="list-group-item list-group-item-action p-3 d-flex align-items-center" style="transition: all 0.2s ease;">
+                                        <div class="me-3">
+                                            <i class="@activity.Icon" style="font-size: 1.5rem;"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <p class="mb-1 fw-semibold" style="color: #333; font-size: 0.95rem;">
+                                                @Html.Raw(activity.Message)
+                                            </p>
+                                            <small class="text-muted">@activity.TimeAgo</small>
+                                        </div>
+                                        @if (!activity.IsRead)
+                                        {
+                                            <span class="badge bg-danger rounded-pill" style="font-size: 0.65rem;">NEW</span>
+                                        }
+                                    </a>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="p-5 text-center text-muted">
+                                <i class="bi bi-activity display-1 opacity-10"></i>
+                                <p class="mt-3">No recent activity</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Unread Notifications -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
+                    <div class="card-header d-flex justify-content-between align-items-center p-3" style="background: linear-gradient(135deg, #E53935, #F44336); color: white;">
+                        <h5 class="mb-0 fw-semibold">Notifications</h5>
+                       @* <a asp-action="MarkAllRead" asp-controller="Notification" class="small text-white text-decoration-none">Mark all read</a>*@
+                    </div>
+                    <div class="card-body p-0">
+                        @if (notifications.Any())
+                        {
+                            <div class="list-group list-group-flush">
+                                @foreach (var n in notifications)
+                                {
+                                    <a href="" class="list-group-item list-group-item-action p-3">
+                                        <div class="d-flex">
+                                            <div class="me-3">
+                                                <i class="bi bi-bell-fill icon-chnage" style="font-size: 1.4rem; color: #E53935;"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <p class="mb-1 small fw-semibold" style="color: #333;">@n.Message</p>
+                                                <p class="mb-0 text-muted" style="font-size: 0.8rem;">@n.Message</p>
+                                                <small class="text-muted">@TimeAgo(n.SentDate)</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="p-5 text-center text-muted">
+                                <i class="bi bi-bell-slash display-1 opacity-10"></i>
+                                <p class="mt-3">No unread notifications</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Floating Button -->
+        <div class="position-fixed" style="bottom: 2rem; right: 2rem; z-index: 1050;">
+            <div class="dropdown">
+                <button class="btn btn-lg rounded-circle shadow-lg d-flex align-items-center justify-content-center dropdown-btn fixed-btn"
+                        type="button" id="quickActionsBtn" data-bs-toggle="dropdown" aria-expanded="false"
+                        style="width: 60px; height: 60px; background: linear-gradient(135deg, #6B46C1, #5E35B1); border: none;">
+                    <i class="bi bi-plus-lg" style="font-size: 1.5rem;"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg p-2" aria-labelledby="quickActionsBtn" style="min-width: 220px; border-radius: 1rem;">
+                    <li>
+                        <a asp-controller="Skill" asp-action="Add" class="dropdown-item d-flex align-items-center gap-3 p-3 rounded-3" style="transition: all 0.2s;">
+                            <div class="bg-warning bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-lightning-charge-fill text-warning" style="font-size: 1.2rem;"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold">Add Skill</div>
+                                <small class="text-muted" style="color:#ccc">Record a new skill</small>
+                            </div>
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider my-1"></li>
+                    <li>
+                        <a asp-controller="Qualification" asp-action="Add" class="dropdown-item d-flex align-items-center gap-3 p-3 rounded-3" style="transition: all 0.2s;">
+                            <div class="bg-success bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-mortarboard-fill text-success" style="font-size: 1.2rem;"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold">Add Qualification</div>
+                                <small class="text-muted">Add degree or certificate</small>
+                            </div>
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider my-1"></li>
+                    <li>
+                        <a asp-controller="Training" asp-action="Add" class="dropdown-item d-flex align-items-center gap-3 p-3 rounded-3" style="transition: all 0.2s;">
+                            <div class="bg-info bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-journal-text text-info" style="font-size: 1.2rem;"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold">Add Training</div>
+                                <small class="text-muted">Log a new course</small>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@functions {
+    string TimeAgo(DateTime? date)
+    {
+        if (!date.HasValue) return "Just now";
+        var ts = DateTime.UtcNow - date.Value.ToUniversalTime();
+        return ts.TotalMinutes < 1 ? "Just now" :
+               ts.TotalMinutes < 60 ? $"{(int)ts.TotalMinutes}m ago" :
+               ts.TotalHours < 24 ? $"{(int)ts.TotalHours}h ago" :
+               $"{(int)ts.TotalDays}d ago";
+    }
+}
+
+<style>
+    div h3, div p.heading-stat,div i {
+        color:#fff!important;
+    }
+</style>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

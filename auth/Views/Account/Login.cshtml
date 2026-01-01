@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>Sign In with Email & Password</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <form id="loginForm">
+            <div class="form-group mb-2">
+                <label>Email</label>
+                <input type="email" id="email" class="form-control" required />
+            </div>
+            <div class="form-group mb-2">
+                <label>Password</label>
+                <input type="password" id="password" class="form-control" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Sign In</button>
+            <p class="mt-2">
+                Don't have an account? <a asp-action="Register">Register</a>
+            </p>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Firebase: Sign in with email/password
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                const idToken = await userCredential.user.getIdToken();
+
+                // Send token to backend
+                const response = await fetch('/Account/FirebaseLogin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ idToken })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = '/';
+                } else {
+                    alert('Login failed. Check credentials.');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+    </script>
+}

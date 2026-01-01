@@ -1,0 +1,35 @@
+﻿@model IEnumerable<auth.Models.Models.NotificationModel>
+
+@foreach (var notification in Model)
+{
+    <div class="notification-card">
+        <div class="notification-header">
+            <div>
+                <strong>@notification.SentBy</strong>
+                <div class="notification-date">
+                    @notification.SentDate.ToLocalTime().ToString()
+                </div>
+            </div>
+            <div class="notification-status">
+                @(notification.ReadStatus == "Read" ? "✓ Read" : "• Unread")
+            </div>
+        </div>
+
+        <div class="notification-message">
+            @notification.Message
+        </div>
+
+        <div class="action-buttons mt-3">
+            @if (notification.ReadStatus != "Read")
+            {
+                <form asp-action="MarkAsRead" asp-route-id="@notification.NotificationId" method="post" style="display:inline;">
+                    <button type="submit" class="btn-light">
+                        @(notification.ReadStatus == "Read" ? "Mark as Unread" : "Mark as Read")
+                    </button>
+                </form>
+
+            }
+            <a asp-action="Details" asp-route-id="@notification.NotificationId" class="btn-purple">View Details</a>
+        </div>
+    </div>
+}

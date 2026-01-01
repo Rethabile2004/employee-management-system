@@ -1,0 +1,131 @@
+﻿@model IEnumerable<auth.Models.Models.ReportModel>
+@{
+    ViewData["Title"] = "My Reports";
+}
+
+<div class="min-vh-100" style="background-color: #f0f0f0; padding: 2rem 0;">
+    <div class="container">
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-5">
+            <div>
+                <h1 class="h3 fw-bold mb-1" style="color: #333;">My Reports</h1>
+                <p class="text-muted small mb-0">View and submit your reports</p>
+            </div>
+            <a asp-action="Submit" class="btn btn-sm px-4 d-flex align-items-center gap-2"
+               style="background: linear-gradient(135deg, #6B46C1, #5E35B1); color: white; border: none; border-radius: 50px; box-shadow: 0 4px 12px rgba(107,70,193,0.3); font-weight: 500;">
+                <i class="bi bi-plus-circle"></i> Submit Report
+            </a>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div id="successToast" class="toast align-items-center text-white bg-success border-0 position-fixed start-50 translate-middle-x shadow-lg"
+                 style="top: 20px; z-index: 1100; min-width: 320px; border-radius: 12px;" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body d-flex align-items-center fw-semibold text-white">
+                        <svg class="bi flex-shrink-0 me-2 text-white" width="22" height="22" fill="currentColor">
+                            <use xlink:href="#check-circle-fill" />
+                        </svg>
+                        @TempData["SuccessMessage"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5 my-5">
+                <i class="bi bi-file-earmark-text display-1 text-muted opacity-30"></i>
+                <h4 class="mt-4 text-muted">No reports yet</h4>
+                <p class="text-muted mb-4">Submit your first report to get started.</p>
+                <a asp-action="Submit" class="btn px-5"
+                   style="background: #6B46C1; border: none; border-radius: 50px; color: white;">
+                    Submit Report
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="list-group list-group-flush">
+                @foreach (var r in Model)
+                {
+                    var statusBadge = r.Status?.ToLower() switch
+                    {
+                        "reviewed" => "bg-success text-white",
+                        "pending" => "bg-warning text-dark",
+                        _ => "bg-secondary text-white"
+                    };
+
+                    <div class="list-group-item listile p-0 mb-3 border-0 shadow-sm"
+                         style="background: #ffffff; border-radius: 16px; overflow: hidden; transition: all 0.2s ease;">
+                        <div class="d-flex align-items-center p-3">
+                            <!-- Leading: Icon + Status -->
+                            <div class="me-3 text-center" style="width: 60px;">
+                                <i class="bi bi-file-earmark-text-fill" style="font-size: 1.4rem; color: #6B46C1;"></i>
+                                <span class="status-chip d-block mt-1 px-2 py-0 rounded-pill small fw-semibold @statusBadge">
+                                    @r.Status
+                                </span>
+                            </div>
+
+                            <!-- Body -->
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 fw-semibold" style="color: #333;">@r.Title</h6>
+                                <p class="mb-0 text-muted small">
+                                    Submitted @r.SubmittedAt.ToLocalTime():MMM dd, yyyy · hh:mm tt
+                                </p>
+                            </div>
+
+                            <!-- Trailing: View -->
+                            <a href="#" class="btn btn-sm btn-icon" title="View"
+                               style="color: #6B46C1; background: #f3eafd; border: none; width: 36px; height: 36px; border-radius: 12px;">
+                                <i class="bi bi-eye-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .listile {
+        transition: all 0.2s ease;
+    }
+
+        .listile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(107,70,193,0.12) !important;
+        }
+
+    .status-chip {
+        font-size: 0.65rem;
+        line-height: 1.2;
+    }
+
+    .btn-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+        .btn-icon:hover {
+            transform: scale(1.1);
+        }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toastEl = document.getElementById("successToast");
+            if (toastEl) {
+                const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+                toast.show();
+                toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+            }
+        });
+    </script>
+}

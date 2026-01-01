@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Analytics";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #e6d9ff;
+    }
+
+    .analytics-container {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .analytics-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        text-align: center;
+    }
+
+        .analytics-card h1 {
+            color: #5a2ea6;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .analytics-card p {
+            color: #444;
+            font-size: 1.05rem;
+            margin-bottom: 25px;
+        }
+
+        .analytics-card ul {
+            text-align: left;
+            color: #333;
+            line-height: 1.7;
+            margin: 0 auto 30px;
+            max-width: 600px;
+        }
+
+            .analytics-card ul li::marker {
+                color: #5a2ea6;
+            }
+
+        .analytics-card .btn-primary {
+            background-color: #5a2ea6;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .analytics-card .btn-primary:hover {
+                background-color: #4b2390;
+                transform: translateY(-2px);
+            }
+</style>
+
+<div class="analytics-container">
+    <div class="analytics-card">
+        <h1>Analytics</h1>
+        <p>
+            Our Analytics feature transforms raw data into actionable insights. Organizations can visualize
+            skill trends, performance metrics, and workforce development patterns in real-time.
+        </p>
+
+        <h4 class="fw-bold mb-3" style="color:#5a2ea6;">Key Highlights</h4>
+        <ul>
+            <li>Interactive dashboards and visual reports.</li>
+            <li>Employee performance trend analysis.</li>
+            <li>Data-driven insights for strategic planning.</li>
+            <li>Predictive analytics to forecast training needs.</li>
+        </ul>
+
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-3">
+            ← Back to Home
+        </a>
+    </div>
+</div>
+

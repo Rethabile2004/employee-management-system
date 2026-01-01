@@ -1,0 +1,143 @@
+﻿@model List<auth.Models.Models.ReportModel>
+
+@{
+    Layout = "~/Views/Shared/_InsideLayoutHR.cshtml";
+    ViewData["Title"] = "Report Management";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+        font-family: 'Poppins', sans-serif;
+        color: #fff;
+    }
+
+    .employee-header,
+    .employee-row {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+    }
+
+    .employee-header {
+        background: rgba(255, 255, 255, 0.15);
+        border-left: 5px solid #6c5ce7;
+        font-weight: 600;
+    }
+
+    .employee-row {
+        background: rgba(255, 255, 255, 0.12);
+        border-left: 5px solid #a29bfe;
+        transition: all 0.3s ease, transform 0.2s ease;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    .employee-row:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.02);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .col-employee {
+        flex: 2;
+    }
+
+    .col-reports,
+    .col-trainings,
+    .col-status {
+        flex: 1;
+        text-align: center;
+    }
+
+    .status-pill {
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+
+    .status-completed {
+        background: #00b894;
+        color: #fff;
+    }
+
+    .status-in-progress {
+        background: #fdcb6e;
+        color: #222;
+    }
+
+    .status-pending {
+        background: #d63031;
+        color: #fff;
+    }
+
+    .status-unknown {
+        background: #636e72;
+        color: #fff;
+    }
+
+    h6,
+    small {
+        margin: 0;
+    }
+
+    @@media (max-width: 768px) {
+        .employee-header {
+            display: none;
+        }
+
+        .employee-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .employee-row > div {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            text-align: left !important;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <h2 class="mb-4 fw-bold text-white">Report Management</h2>
+
+    <div class="employee-header">
+        <div class="col-employee"><strong>Report ID</strong></div>
+        <div class="col-reports"><strong>Employee</strong></div>
+        <div class="col-trainings"><strong>Report Title</strong></div>
+        <div class="col-status"><strong>Date</strong></div>
+    </div>
+
+    <div class="d-flex flex-column gap-2 mt-2">
+        @if (Model != null && Model.Count > 0)
+        {
+            @foreach (var e in Model)
+            {
+                <div class="employee-row">
+                    <div class="col-employee">
+                        <h6>@e.ReportId</h6>
+                    </div>
+                    <div class="col-reports">
+                        <strong>@e.UserId</strong>
+                    </div>
+                    <div class="col-trainings">
+                        <strong>@e.Title</strong>
+                    </div>
+                    <div class="col-status">
+                        <small>@e.SubmittedAt</small>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center text-white p-5">
+                <h5>No reports found.</h5>
+            </div>
+        }
+    </div>
+</div>

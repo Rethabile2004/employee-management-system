@@ -1,0 +1,93 @@
+﻿@model List<Auth.Models.ViewModels.SkillGapViewModel>
+
+@{
+    Layout = "~/Views/Shared/_InsideLayout.cshtml";
+    ViewData["Title"] = "Skill Gap Analysis";
+}
+
+<style>
+    .user-card {
+        background: rgba(255,255,255,0.15);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        color: #fff;
+        backdrop-filter: blur(8px);
+    }
+
+    .skill-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0.75rem;
+        border-radius: 12px;
+        margin-bottom: 0.5rem;
+    }
+
+    .level-beginner {
+        background-color: #f39c12;
+    }
+
+    .level-intermediate {
+        background-color: #3498db;
+    }
+
+    .level-advanced {
+        background-color: #2ecc71;
+    }
+
+    .skill-name {
+        font-weight: 600;
+    }
+
+    .skill-category {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+</style>
+
+    <div class="back-btn-container">
+        <a href="@Url.Action("Dashboard", "Admin")" class="back-btn">
+            ← 
+        </a>
+    </div>
+
+<h3 class="mb-4">Skill Gap Analysis</h3>
+
+@if (Model != null && Model.Count > 0)
+{
+    @foreach (var user in Model)
+    {
+        <div class="user-card">
+            <h5>@user.FullName</h5>
+            @if (user.MissingSkills.Count > 0)
+            {
+                <div class="skills-list">
+                    @foreach (var skill in user.MissingSkills)
+                    {
+                        var levelClass = skill.SkillLevel?.ToLower() switch
+                        {
+                            "beginner" => "level-beginner",
+                            "intermediate" => "level-intermediate",
+                            "advanced" => "level-advanced",
+                            _ => "level-beginner"
+                        };
+                        <div class="skill-item @levelClass">
+                            <span class="skill-name">@skill.SkillName</span>
+                            <span class="skill-category">@skill.Category</span>
+                            <span>@skill.SkillLevel</span>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>No missing skills</p>
+            }
+        </div>
+    }
+}
+else
+{
+    <p>No users found.</p>
+}

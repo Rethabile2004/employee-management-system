@@ -1,0 +1,189 @@
+﻿@model Auth.Models.Models.TrainingModel
+
+@{
+    Layout = "~/Views/Shared/_InsideLayoutHR.cshtml";
+    ViewData["Title"] = Model?.TrainingName ?? "Training Details";
+    var users = ViewBag.UsersInTraining as List<Auth.Models.Models.UserModel>;
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 fw-bold mb-0">Training Details</h2>
+        <a asp-action="Trainings" asp-controller="HR" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i>
+            Back to Trainings
+        </a>
+    </div>
+
+    @if (Model != null)
+    {
+        <!-- Training Info Card -->
+        <div class="training-info-card card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+            <div class="card-header bg-purple text-white py-3 px-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="training-icon-large rounded bg-white text-purple d-flex align-items-center justify-content-center"
+                         style="width: 56px; height: 56px; font-size: 1.5rem;">
+                        <i class="bi bi-journal-check"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-0">@Model.TrainingName</h4>
+                        <small class="opacity-90">ID: @Model.TrainingId</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="info-item p-3 rounded-3 border">
+                            <small class="text-muted text-uppercase fw-medium">Status</small>
+                            <p class="mb-0">
+                                @{
+                                    var status = (Model.CompletionStatus ?? "Unknown").Trim().ToLower();
+                                    var statusBadge = status switch
+                                    {
+                                        "completed" => "bg-success",
+                                        "in progress" => "bg-warning text-dark",
+                                        "pending" => "bg-danger",
+                                        _ => "bg-secondary"
+                                    };
+                                    var statusText = char.ToUpper(status[0]) + status.Replace("-", " ").Substring(1);
+                                }
+                                <span class="badge @statusBadge px-3 py-2">@statusText</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item p-3 rounded-3 border">
+                            <small class="text-muted text-uppercase fw-medium">Provider</small>
+                            <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.Provider) ? "Not specified" : Model.Provider)</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item p-3 rounded-3 border">
+                            <small class="text-muted text-uppercase fw-medium">Start Date</small>
+                            <p class="mb-0 fw-semibold">@Model.StartDate</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item p-3 rounded-3 border">
+                            <small class="text-muted text-uppercase fw-medium">End Date</small>
+                            <p class="mb-0 fw-semibold">@Model.EndDate</p>
+                        </div>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <div class="mt-4 p-3 rounded-3 border bg-light-subtle">
+                        <small class="text-muted text-uppercase fw-medium d-block mb-2">Description</small>
+                        <p class="text-muted text-uppercase fw-medium d-block mb-2">@Model.Description</p>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.DocumentUrl))
+                {
+                    <div class="mt-4 text-center">
+                        <a asp-action="DownloadCertificate"
+                           asp-controller="Hr"
+                           target="_blank"
+                           asp-route-userId="user.UserId"
+                           asp-route-trainingId="@Model.TrainingId"
+                           asp-route-fileUrl="@Model.DocumentUrl"
+                           asp-route-fileName="@System.IO.Path.GetFileName(Model.DocumentUrl)"
+                           class="btn btn-outline-primary btn-sm me-1"
+                           title="Download Training Document">
+                            <i class="bi bi-download"></i>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Users in Training -->
+        <div class="users-section">
+            <h5 class="section-title mb-3">
+                <i class="bi bi-people text-purple me-2"></i>
+                Users @(
+                Model.CompletionStatus?.ToLower() switch
+                {
+                    "completed" => "who completed this training",
+                    "in progress" => "currently attending",
+                    "pending" => "scheduled to start",
+                    _ => "associated with this training"
+                }
+                        )
+        </h5>
+
+        @if (users != null && users.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th class="text-center">Report</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var u in users)
+                            {
+                                <tr>
+                                    <td class="fw-medium">@u.FullName</td>
+                                    <td>
+                                        <small class="text-muted">@u.Email</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info text-dark">@u.Role</span>
+                                    </td>
+                                    <td class="text-center">
+                                        @* <a asp-controller="Hr"
+                                           asp-action="DownloadCertificate"
+                                           asp-route-userId="@u.UserId"
+                                           asp-route-fileUrl="@Model.DocumentUrl"
+                                           asp-route-fileName="@System.IO.Path.GetFileName(@Model.DocumentUrl)"
+                                           asp-route-trainingId="@Model.TrainingId"
+                                           class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-file-earmark-arrow-down"></i>
+                                            <span class="d-none d-sm-inline">Report</span>
+                                        </a> *@
+
+                                        <a asp-action="DownloadCertificate"
+                                           asp-controller="Hr"
+                                           target="_blank"
+                                           asp-route-userId="user.UserId"
+                                           asp-route-trainingId="@Model.TrainingId"
+                                           asp-route-fileUrl="@Model.DocumentUrl"
+                                           asp-route-fileName="@System.IO.Path.GetFileName(Model.DocumentUrl)"
+                                           class="btn btn-outline-primary btn-sm me-1"
+                                           title="Download Training Document">
+                                            <i class="bi bi-download"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4">
+                    <i class="bi bi-person-slash display-1 text-muted opacity-50"></i>
+                    <p class="mt-3 text-muted">No users found for this training status.</p>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5 my-5">
+            <i class="bi bi-exclamation-triangle display-1 text-muted opacity-50"></i>
+            <h5 class="mt-3 text-muted">Training not found</h5>
+            <p class="text-muted">The requested training could not be loaded.</p>
+        </div>
+    }
+</div>

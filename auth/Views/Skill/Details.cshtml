@@ -1,0 +1,154 @@
+﻿@model Auth.Models.Models.SkillModel
+
+@{
+    ViewData["Title"] = "Skill Details";
+}
+
+<div class="min-vh-100" style="padding: 2rem 0;">
+    <div class="container">
+        <!-- Back & Title -->
+        <div class="d-flex align-items-center mb-4">
+            <a asp-action="List" class="text-decoration-none me-3">
+                <i class="bi bi-arrow-left-circle-fill" style="font-size: 1.5rem; color: #6B46C1;"></i>
+            </a>
+            <div>
+                <h1 class="h3 mb-0 fw-bold" style="color: #333;">Skill Details</h1>
+                <p class="text-muted small mb-0">Review your recorded skill</p>
+            </div>
+        </div>
+
+        <!-- Details Card -->
+        <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
+            <div class="card-header d-flex justify-content-between align-items-center p-3"
+                 style="background: linear-gradient(135deg, #6B46C1, #5E35B1);">
+                <h5 class="mb-0 fw-semibold">@Model.SkillName</h5>
+                <div class="d-flex gap-2">
+                    @if (Model.Status != "Approved" && Model.Status != "Rejected")
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.SkillId"
+                           class="btn btn-sm px-3 d-flex align-items-center gap-1"
+                           style="background-color: #FFA726; color: white; border: none; border-radius: 50px;">
+                            <i class="bi bi-pencil-fill"></i> Edit
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.SkillId"
+                           class="btn btn-sm px-3 d-flex align-items-center gap-1"
+                           style="background-color: #dc3545; color: white; border: none; border-radius: 50px;">
+                            <i class="bi bi-trash-fill"></i> Delete
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="List"
+                           class="btn btn-sm px-3 d-flex align-items-center gap-1"
+                           style="color: #6B46C1; border: 1px solid #ddd; border-radius: 50px;">
+                            Back to List
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <div class="card-body p-4" style="">
+                <div class="row g-4">
+
+                    <!-- Skill Info -->
+                    <div class="col-md-6">
+                        <div class="info-card p-3">
+                            <h6 class="fw-bold mb-3" style="color: #6B46C1;">
+                                <i class="bi bi-lightning-charge-fill me-2"></i>Skill Information
+                            </h6>
+                            <p class="mb-2"><strong>Skill Name:</strong> @Model.SkillName</p>
+                            <p class="mb-2"><strong>Category:</strong> @Model.Category</p>
+                            <p class="mb-0">
+                                <strong>Proficiency Level:</strong>
+                                <span class="badge rounded-pill px-3 py-1 ms-2 @GetLevelClass(Model.SkillLevel)">
+                                    @Model.SkillLevel
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Approval & Status -->
+                    <div class="col-md-6">
+                        <div class="info-card p-3">
+                            <h6 class="fw-bold mb-3" style="color: #6B46C1;">
+                                <i class="bi bi-patch-check-fill me-2"></i>Approval & Status
+                            </h6>
+                            <p class="mb-2">
+                                <strong>Status:</strong>
+                                <span class="badge rounded-pill px-3 py-1 ms-2 @GetStatusClass(Model.Status)">
+                                    @Model.Status
+                                </span>
+                            </p>
+                            <p class="mb-0"><strong>Approved By:</strong> @(string.IsNullOrEmpty(Model.ApprovedBy) ? "— Not yet approved" : Model.ApprovedBy)</p>
+                        </div>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="col-md-6">
+                        <div class="info-card p-3">
+                            <h6 class="fw-bold mb-3" style="color: #6B46C1;">
+                                <i class="bi bi-clock-history me-2"></i>Timeline
+                            </h6>
+                            <p class="mb-2"><strong>Added:</strong> @Model.DateAdded.ToString("dd MMM yyyy, HH:mm")</p>
+                            <p class="mb-0"><strong>Last Updated:</strong> @(Model.DateUpdated != default ? Model.DateUpdated.ToString("dd MMM yyyy, HH:mm") : "—")</p>
+                        </div>
+                    </div>
+
+                    <!-- System IDs -->
+                    <div class="col-md-6">
+                        <div class="info-card p-3">
+                            <h6 class="fw-bold mb-3" style="color: #6B46C1;">
+                                <i class="bi bi-code-slash me-2"></i>System Identifiers
+                            </h6>
+                            <p class="mb-2"><strong>Skill ID:</strong> <code>@Model.SkillId</code></p>
+                            <p class="mb-0"><strong>User ID:</strong> <code>@Model.UserId</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusClass(string status) => status?.ToLower() switch
+    {
+        "approved" => "bg-success text-white",
+        "pending" => "bg-warning text-dark",
+        "rejected" => "bg-danger text-white",
+        _ => "bg-secondary text-white"
+    };
+
+    string GetLevelClass(string level) => level?.ToLower() switch
+    {
+        "beginner" => "bg-secondary text-white",
+        "intermediate" => "bg-warning text-dark",
+        "advanced" => "bg-success text-white",
+        _ => "bg-info text-white"
+    };
+}
+
+<style>
+    .info-card {
+        /* background: #f8f9fa; */
+        border-radius: 0.75rem;
+        border: 1px solid #ddd;
+        transition: all 0.2s ease;
+    }
+
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(107,70,193,0.1);
+            border-color: #6B46C1;
+        }
+
+    code {
+        background: #e9ecef;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.85em;
+        color: #495057;
+    }
+
+    
+</style>

@@ -1,0 +1,248 @@
+﻿@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    ViewData["Title"] = "Testimonials";
+}
+
+<div class="testimonials-root">
+    <header class="testimonials-header">
+        <div class="brand">
+            <div class="brand-text">Streamline · Testimonials</div>
+        </div>
+        <p class="subtitle">Real stories from organisations who trust Streamline</p>
+    </header>
+
+    <main class="testimonials-main">
+        <div class="intro-card">
+            <h1>What our clients say</h1>
+            <p class="lead">We help organisations discover talent, close skill gaps and make workforce decisions with confidence.</p>
+        </div>
+
+        <div class="cards-grid" role="list">
+            <!-- Testimonial 1 -->
+            <article class="testimonial-card" role="listitem" aria-label="Testimonial from Thabo M">
+                <div class="portrait">
+                    <img src="~/images/boyfriend inspiration.jpeg" alt="Thabo M - HR Manager" />
+                </div>
+
+                <div class="testimonial-body">
+                    <p class="quote">“Streamline gave us visibility into skills we never knew we had. We cut training costs while increasing productivity — the dashboard is invaluable.”</p>
+
+                    <div class="meta">
+                        <div class="name">Thabo M.</div>
+                        <div class="role">HR Manager — CapeTown Logistics</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Testimonial 2 -->
+            <article class="testimonial-card" role="listitem" aria-label="Testimonial from Aisha K">
+                <div class="portrait">
+                    <img src="~/images/download (3).jpeg" alt="Aisha K - L&D Lead" />
+                </div>
+
+                <div class="testimonial-body">
+                    <p class="quote">“The gap analysis feature helped us design targeted training. Our certification rates went from 56% to 89% in 6 months.”</p>
+
+                    <div class="meta">
+                        <div class="name">Aisha K.</div>
+                        <div class="role">IT Services</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Testimonial 3 -->
+            <article class="testimonial-card" role="listitem" aria-label="Testimonial from Pieter V">
+                <div class="portrait">
+                    <img src="~/images/download.jpeg" alt="Pieter V - Ops Director" />
+                </div>
+
+                <div class="testimonial-body">
+                    <p class="quote">“Easy to use, secure, and the reporting saved us hours every week. Our managers actually use the system — that says everything.”</p>
+
+                    <div class="meta">
+                        <div class="name">Pieter V.</div>
+                        <div class="role">Operations Director — GlobalParts</div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div class="cta-row">
+            <a href="@Url.Action("Contact", "Home")" class="btn-primary-cta">Get in touch</a>
+            <a href="@Url.Action("About", "Home")" class="btn-secondary-cta">Learn more about Streamline</a>
+        </div>
+    </main>
+</div>
+
+<style>
+    /* Root */
+    .testimonials-root {
+        min-height: 100vh;
+        background: linear-gradient(180deg, #f1eaff 0%, #e6d9ff 100%);
+        padding: 48px 20px;
+        box-sizing: border-box;
+        font-family: Inter, "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial;
+        color: #2c1b3b;
+    }
+
+    /* Header */
+    .testimonials-header {
+        text-align: center;
+        margin-bottom: 18px;
+    }
+
+    .brand-text {
+        font-weight: 700;
+        color: #5a2ea6;
+        font-size: 18px;
+    }
+
+    .subtitle {
+        color: #6d5496;
+        margin-top: 6px;
+        opacity: 0.9;
+    }
+
+    /* Intro card */
+    .intro-card {
+        max-width: 980px;
+        margin: 0 auto 28px;
+        background: white;
+        border-radius: 14px;
+        padding: 22px 26px;
+        box-shadow: 0 10px 30px rgba(90,46,166,0.08);
+        text-align: center;
+    }
+
+        .intro-card h1 {
+            margin: 0 0 6px;
+            color: #4b1f84;
+            font-size: 28px;
+        }
+
+        .intro-card .lead {
+            margin: 0;
+            color: #5b3c8a;
+            opacity: 0.9;
+        }
+
+    /* Grid */
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 18px;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 6px;
+    }
+
+    /* Card */
+    .testimonial-card {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95));
+        border-radius: 12px;
+        padding: 18px;
+        box-shadow: 0 8px 22px rgba(60,30,120,0.06);
+        transition: transform .18s ease, box-shadow .18s ease;
+        will-change: transform;
+        overflow: hidden;
+    }
+
+        .testimonial-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(60,30,120,0.12);
+        }
+
+    /* Portrait */
+    .portrait {
+        width: 86px;
+        height: 86px;
+        flex: 0 0 86px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        background: linear-gradient(180deg,#fff,#f6f2ff);
+    }
+
+        .portrait img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+    /* Body */
+    .testimonial-body {
+        flex: 1;
+    }
+
+    .quote {
+        font-style: italic;
+        color: #39224f;
+        margin: 0 0 10px;
+        line-height: 1.5;
+        font-size: 15px;
+    }
+
+    .meta {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .name {
+        font-weight: 700;
+        color: #4b1f84;
+    }
+
+    .role {
+        color: #6d5496;
+        font-size: 13px;
+        opacity: 0.95
+    }
+
+    /* CTA row */
+    .cta-row {
+        max-width: 900px;
+        margin: 28px auto 0;
+        text-align: center;
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary-cta {
+        background: #5a2ea6;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 700;
+        box-shadow: 0 8px 20px rgba(90,46,166,0.14);
+    }
+
+        .btn-primary-cta:hover {
+            transform: translateY(-3px);
+            background: #4b1f84;
+        }
+
+    .btn-secondary-cta {
+        background: transparent;
+        color: #5a2ea6;
+        border: 2px solid rgba(90,46,166,0.14);
+        padding: 10px 18px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+        .btn-secondary-cta:hover {
+            background: rgba(90,46,166,0.06);
+        }
+
+    
+</style>
+

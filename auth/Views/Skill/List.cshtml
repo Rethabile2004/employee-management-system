@@ -1,0 +1,221 @@
+﻿@using Auth.Models.Models
+@model List<SkillModel>
+
+@{
+    ViewData["Title"] = "Skill Management";
+}
+
+<div class="min-vh-100" style="padding: 2rem 0;">
+    <div class="container">
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-5">
+            <div>
+                <h1 class="h3 fw-bold mb-1" style="color: #333;">My Skills</h1>
+                <p class="text-muted small mb-0">Track your professional capabilities</p>
+            </div>
+            <a asp-action="Add" class="btn btn-sm px-4 d-flex align-items-center gap-2"
+               style="background: linear-gradient(135deg, #6B46C1, #5E35B1); color: white; border: none; border-radius: 50px; box-shadow: 0 4px 12px rgba(107,70,193,0.3); font-weight: 500;">
+                <i class="bi bi-plus-lg"></i> Add Skill
+            </a>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div id="successToast" class="toast align-items-center text-white bg-success border-0 position-fixed start-50 translate-middle-x shadow-lg"
+                 style="top: 20px; z-index: 1100; min-width: 320px; border-radius: 12px;"
+                 role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body d-flex align-items-center fw-semibold text-white">
+                        <svg class="bi flex-shrink-0 me-2 text-white" width="22" height="22" role="img" aria-label="Success:" fill="currentColor">
+                            <use xlink:href="#check-circle-fill" />
+                        </svg>
+                        @TempData["SuccessMessage"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <!-- Empty State -->
+            <div class="text-center py-5 my-5">
+                <i class="bi bi-lightning-charge display-1 text-muted opacity-30"></i>
+                <h4 class="mt-4 text-muted">No skills yet</h4>
+                <p class="text-muted mb-4">Start building your professional profile.</p>
+                <a asp-action="Add" class="btn btn-primary px-5"
+                   style="background: #6B46C1; border: none; border-radius: 50px;">
+                    Add First Skill
+                </a>
+            </div>
+        }
+        else
+        {
+            <!-- Search & Filter -->
+            <div class="row mb-4 g-3">
+                <div class="col-md-6">
+                    <div class="input-group" style="border-radius: 0.75rem; overflow: hidden;">
+                        <span class="input-group-text bg-white border-end-0" style="border: 1px solid #ccc;">
+                            <i class="bi bi-search" style="color: #6B46C1;"></i>
+                        </span>
+                        <input id="skillSearch" type="text" class="form-control form-control-lg border-start-0"
+                               placeholder="Search skills..." style="border: 1px solid #ccc;" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <select id="categoryFilter" class="form-select form-select-lg"
+                            style="border-radius: 0.75rem; border: 1px solid #ccc;">
+                        <option value="">All Categories</option>
+                        <option>Technical</option>
+                        <option>Soft Skills</option>
+                        <option>Management</option>
+                        <option>Development</option>
+                        <option>Design</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- ListTile-Style List -->
+            <div class="list-group list-group-flush">
+                @foreach (var skill in Model.OrderByDescending(s => s.DateAdded))
+                {
+                    <div class="list-group-item listile p-0 mb-3 border-0 shadow-sm"
+                         style="background: #ffffff; border-radius: 16px; overflow: hidden; transition: all 0.2s ease;">
+
+                        <div class="d-flex align-items-center p-3">
+
+                            <!-- Leading: Level Icon -->
+                            <div class="me-3 text-center" style="width: 50px;">
+                                <i class="@GetLevelIcon(skill.SkillLevel)" style="font-size: 1.6rem; color: #6B46C1;"></i>
+                            </div>
+
+                            <!-- Title + Subtitle -->
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 fw-semibold" font-size: 1rem;">
+                                    @skill.SkillName
+                                </h6>
+                                <p class="mb-0 text-muted small">
+                                    @skill.Category
+                                    <span class="text-muted">·</span>
+                                    Added @skill.DateAdded:MMM dd, yyyy
+                                </p>
+                            </div>
+
+                            <!-- Trailing: Status + Actions -->
+                            <div class="d-flex align-items-center gap-3">
+
+                                <!-- Status Chip -->
+                                <span class="status-chip d-block px-3 py-1 rounded-pill small fw-semibold @GetStatusClass(skill.Status)">
+                                    @skill.Status
+                                </span>
+
+                                <!-- Actions -->
+                                <div class="d-flex gap-1">
+                                    @if (skill.Status != "Approved" && skill.Status != "Rejected")
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@skill.SkillId"
+                                           class="btn btn-sm btn-icon" title="Edit"
+                                           style="color: #666; background: #f0f0f0; border: none; width: 36px; height: 36px; border-radius: 12px;">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@skill.SkillId"
+                                           class="btn btn-sm btn-icon" title="Delete"
+                                           style="color: #dc3545; background: #fee; border: none; width: 36px; height: 36px; border-radius: 12px;">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@skill.SkillId"
+                                           class="btn btn-sm btn-icon" title="View Details"
+                                           style="color: #6B46C1; background: #f3eafd; border: none; width: 36px; height: 36px; border-radius: 12px;">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Details" asp-route-id="@skill.SkillId"
+                                           class="btn btn-sm btn-icon" title="View Details"
+                                           style="color: #6B46C1; background: #f3eafd; border: none; width: 36px; height: 36px; border-radius: 12px;">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    string GetStatusClass(string status) => status?.ToLower() switch
+    {
+        "approved" => "bg-success text-white",
+        "pending" => "bg-warning text-dark",
+        "rejected" => "bg-danger text-white",
+        _ => "bg-secondary text-white"
+    };
+
+    string GetLevelIcon(string level) => level?.ToLower() switch
+    {
+        "beginner" => "bi bi-circle",
+        "intermediate" => "bi bi-circle-half",
+        "advanced" => "bi bi-circle-fill",
+        _ => "bi bi-question-circle"
+    };
+}
+
+<style>
+    .listile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(107,70,193,0.12) !important;
+    }
+
+    .status-chip {
+        font-size: 0.65rem;
+        line-height: 1.2;
+    }
+
+    .btn-icon:hover {
+        transform: scale(1.1);
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toastEl = document.getElementById("successToast");
+            if (toastEl) {
+                const toast = new bootstrap.Toast(toastEl, {
+                    delay: 3000
+                });
+                toast.show();
+
+                toastEl.addEventListener('hidden.bs.toast', () => {
+                    toastEl.remove();
+                });
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('skillSearch');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const rows = document.querySelectorAll('tbody tr');
+
+            function filterSkills() {
+                const query = searchInput.value.toLowerCase();
+                const category = categoryFilter.value;
+                rows.forEach(r => {
+                    const name = r.cells[0].textContent.toLowerCase();
+                    const cat = r.cells[2].textContent;
+                    const visible = (!query || name.includes(query)) &&
+                                    (!category || cat === category);
+                    r.style.display = visible ? '' : 'none';
+                });
+            }
+
+            searchInput.addEventListener('input', filterSkills);
+            categoryFilter.addEventListener('change', filterSkills);
+        });
+    </script>
+}

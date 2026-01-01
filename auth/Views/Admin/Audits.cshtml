@@ -1,0 +1,189 @@
+﻿@model List<Auth.Models.ViewModels.AuditViewModel>
+@{
+    Layout = "~/Views/Shared/_InsideLayout.cshtml";
+    ViewData["Title"] = "Audit Management";
+}
+
+<div class="container-fluid py-4">
+    <!-- Search & Filter Bar -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <h2 class="h3 fw-bold mb-0">Audit Management</h2>
+        <div class="d-flex gap-2 flex-wrap">
+            <select id="actionFilter" class="form-select form-select-sm" style="min-width: 180px;">
+                <option value="">All Actions</option>
+                <option value="User removal">User removal</option>
+                <option value="Skill Approval">Skill Approval</option>
+                <option value="Skill rejected">Skill rejected</option>
+                <option value="Qualification Approval">Qualification Approval</option>
+                <option value="Rejected Qualification">Rejected Qualification</option>
+                <option value="Approved Skill">Approved Skill</option>
+                <option value="Rejected Skill">Rejected Skill</option>
+                <option value="Approved Qualification">Approved Qualification</option>
+                <option value="Rejected Qualification">Rejected Qualification</option>
+            </select>
+            <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Search User ID, Audited By..." style="width: 240px;">
+        </div>
+    </div>
+
+    <!-- Audit List -->
+    <div class="audit-list" id="auditList">
+        @if (Model != null && Model.Any())
+        {
+            <!-- Desktop Header -->
+            <div class="audit-header d-none d-md-flex bg-body-tertiary py-3 px-4 rounded-top border-bottom">
+                <div class="col-3"><strong>Audit ID / User</strong></div>
+                <div class="col-3 text-center"><strong>Date</strong></div>
+                <div class="col-3 text-center"><strong>Audited By</strong></div>
+                <div class="col-3 text-end"><strong>Actions</strong></div>
+            </div>
+
+            <!-- Audit Items -->
+            <div id="auditItems">
+                @foreach (var audit in Model)
+                {
+                    <div class="audit-card card border-0 shadow-sm mb-3 rounded-3 overflow-hidden audit-item"
+                         data-action="@audit.Action"
+                         data-userid="@audit.UserId"
+                         data-auditedby="@audit.AuditedBy">
+                        <div class="card-body p-0">
+                            <div class="row g-0 align-items-center">
+                                <!-- Clickable Area -->
+                                <div class="col-md-9 p-4"
+                                     onclick="location.href='@Url.Action("AuditDetails", "Hr", new { auditId = audit.AuditId })'"
+                                     style="cursor: pointer;">
+                                    <div class="row g-3 align-items-center">
+                                        <!-- Action + User ID -->
+                                        <div class="col-md-4">
+                                            <h6 class="mb-1 fw-semibold text-primary">
+                                                @audit.Action
+                                            </h6>
+                                            <small class="text-muted d-block">
+                                                <i class="bi bi-person me-1"></i>User ID: @audit.UserId
+                                            </small>
+                                        </div>
+                                        <!-- Date -->
+                                        <div class="col-md-4 text-md-center">
+                                            <div class="d-flex align-items-center justify-content-md-center gap-2">
+                                                <i class="bi bi-calendar3 text-primary"></i>
+                                                <span>@audit.Date</span>
+                                            </div>
+                                        </div>
+                                        <!-- Audited By -->
+                                        <div class="col-md-4 text-md-center">
+                                            <div class="d-flex align-items-center justify-content-md-center gap-2">
+                                                <i class="bi bi-person-check text-success"></i>
+                                                <span>@audit.AuditedBy</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="col-md-3 p-3 border-start d-flex justify-content-end gap-2">
+                                    <a asp-action="AuditDetails"
+                                       asp-controller="Admin"
+                                       asp-route-auditId="@audit.AuditId"
+                                       class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
+                                       title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                        <span class="d-none d-lg-inline">View</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="text-center py-5 my-5">
+                <i class="bi bi-inbox display-1 text-muted opacity-50"></i>
+                <h5 class="mt-3 text-muted">No audits found</h5>
+                <p class="text-muted">Start by creating a new audit.</p>
+                <a asp-action="Users" asp-controller="HR" class="btn btn-primary mt-3">
+                    <i class="bi bi-plus-circle me-1"></i> Create First Audit
+                </a>
+            </div>
+        }
+    </div>
+
+    <!-- No Results (Hidden by Default) -->
+    <div id="noResults" class="text-center py-5 d-none">
+        <i class="bi bi-search display-1 text-muted opacity-50"></i>
+        <h5 class="mt-3 text-muted">No audits match your search</h5>
+        <p class="text-muted">Try adjusting your filters.</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function downloadReport(auditId) {
+            // Replace with actual export logic
+            alert(`Download report for Audit #${auditId}`);
+            // Example: window.location = `/Hr/ExportAudit?auditId=${auditId}`;
+        }
+
+        // Real-time Search & Filter
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("searchInput");
+            const actionFilter = document.getElementById("actionFilter");
+            const auditItems = document.querySelectorAll(".audit-item");
+            const auditList = document.getElementById("auditList");
+            const noResults = document.getElementById("noResults");
+
+            function filterAudits() {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                const selectedAction = actionFilter.value;
+
+                let visibleCount = 0;
+
+                auditItems.forEach(item => {
+                    const action = item.getAttribute("data-action");
+                    const userId = item.getAttribute("data-userid").toLowerCase();
+                    const auditedBy = item.getAttribute("data-auditedby").toLowerCase();
+
+                    const matchesAction = !selectedAction || action === selectedAction;
+                    const matchesSearch = !searchTerm ||
+                        userId.includes(searchTerm) ||
+                        auditedBy.includes(searchTerm) ||
+                        action.toLowerCase().includes(searchTerm);
+
+                    if (matchesAction && matchesSearch) {
+                        item.style.display = "";
+                        visibleCount++;
+                    } else {
+                        item.style.display = "none";
+                    }
+                });
+
+                // Show/hide no results
+                if (visibleCount === 0 && auditItems.length > 0) {
+                    noResults.classList.remove("d-none");
+                    auditList.style.display = "none";
+                } else {
+                    noResults.classList.add("d-none");
+                    auditList.style.display = "";
+                }
+            }
+
+            // Attach events
+            searchInput.addEventListener("input", filterAudits);
+            actionFilter.addEventListener("change", filterAudits);
+
+            // Initial filter
+            filterAudits();
+        });
+
+        // Optional: Visual feedback on card click
+        document.querySelectorAll('.audit-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (!e.target.closest('button, a')) {
+                    this.style.opacity = '0.8';
+                    setTimeout(() => this.style.opacity = '1', 200);
+                }
+            });
+        });
+    </script>
+}
